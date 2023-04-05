@@ -1,17 +1,7 @@
-language: html
-
-before_script:
-  - npm install -g http-server
+language: node_js
+node_js:
+  - "10"
 
 script:
-  - http-server -c-1
-
-deploy:
-  provider: pages
-  skip_cleanup: true
-  github_token: $GITHUB_TOKEN
-  local_dir: .
-  target_branch: gh-pages
-  on:
-    branch: main
+  - npm run test
 

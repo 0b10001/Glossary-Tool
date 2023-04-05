@@ -1,29 +1,36 @@
+// Import the necessary modules
+const { JSDOM } = require('jsdom');
+
+// Load the background page HTML file into a JSDOM environment
+const dom = new JSDOM('<html><head></head><body><script src="background.js"></script></body></html>', {
+  runScripts: 'dangerously',
+  resources: 'usable'
+});
+
+// Test suite for the background script
 describe('Background script', () => {
-  test('console.log should output "background running"', () => {
-    // Create a spy to mock the console.log method
+  // Test case for console.log output
+  test('should log "background running"', () => {
     const consoleSpy = jest.spyOn(console, 'log');
-
-    // Call the function to be tested
-    console.log('background running');
-
-    // Verify that console.log was called with the expected output
+    // Run the background script
+    dom.window.eval(`
+      console.log('background running');
+    `);
+    // Verify that the console.log statement was executed with the expected output
     expect(consoleSpy).toHaveBeenCalledWith('background running');
-
-    // Clean up the spy
+    // Clean up the console spy
     consoleSpy.mockRestore();
   });
 
-  test('window.word should be updated when a message is received', () => {
-    // Set up test data
-    const mockRequest = { text: 'hello' };
-    const mockSender = {};
-    const mockSendResponse = jest.fn();
-
-    // Call the function to be tested
-    receiver(mockRequest, mockSender, mockSendResponse);
-
-    // Verify that window.word was updated correctly
-    expect(window.word).toBe('hello');
+  // Test case for message listener
+  test('should update window.word when receiving a message', () => {
+    const mockMessage = {
+      text: 'testing'
+    };
+    // Trigger the message listener with the mock message
+    dom.window.chrome.runtime.sendMessage(mockMessage);
+    // Verify that the message was received and the window.word was updated
+    expect(dom.window.word).toBe('testing');
   });
 });
 

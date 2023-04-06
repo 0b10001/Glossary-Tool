@@ -17,6 +17,12 @@ jobs:
           node-version: 16
       - run: npm ci
       - run: npm test
+       - run:
+          name: Upload coverage report to Codecov
+          command: |
+            curl -Os https://uploader.codecov.io/latest/linux/codecov \
+              && chmod +x codecov \
+              && ./codecov
 
   publish-gpr:
     needs: build
@@ -34,3 +40,8 @@ jobs:
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+ workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - build         

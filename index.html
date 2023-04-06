@@ -8,14 +8,16 @@
     <link rel="stylesheet" href="style.css" type="text/css"/>
     <!--<script src="sketch.js" type="text/javascript"></script>-->
     
+    
 </head>
+
 
 <body>
     <!-- Trying to see what's up-->
     <div class="popUp" id="popUp">
         <div class="parent-one">
             <div class="child-left">
-                <h2> <p class="HeaderWord" id="headerWord">""</p></h2>
+                <h2> <p class="HeaderWord" id="headerWord"></p></h2>
                 <!--<input type="button" id="btn1" value="Populate">-->
                   
             </div>
@@ -57,19 +59,19 @@
             </div>
 
             <div class ="definitions">
-                <p class="Definition" id="definition">""</p>
-                <p class="egSentence" id="egSentence">""</p>
-                <p class="wordsWithSimilarMeaning" id="simWords">""</p>
-                <p class="notMean" id="notMean">""</p>
+                <p class="Definition" id="definition"></p>
+                <p class="egSentence" id="egSentence"></p>
+                <p class="wordsWithSimilarMeaning" id="simWords"></p>
+                <p class="notMean" id="notMean"></p>
                 
-                <div>
+                <div class="trans" id="trans">
                     <div class="translateInto">
                         <p><strong>Translate into</strong></p>
                     </div>
 
                     <div class="dropdown" id="languageDD">
-                        <select name="language">
-                            <option value="Nothing"></option>
+                        <select id="language">
+                            <option value="">language</option>
                             <option value="Afrikaans">Afrikaans</option>
                             <option value="isiNdebele">isiNdebele</option>
                             <option value="isiXhosa">isiXhosa</option>
@@ -84,7 +86,7 @@
                     </div>
 
                     <div class="word">
-                        <p class="translation" id="translation">""</p>
+                        <p class="translation" id="translation"></p>
                     </div>
                 </div>
                 
@@ -94,9 +96,8 @@
         
 
     </div>
-
     
     
 </body>
-<script src="GlossaryTool.js" defer></script>
+<script  src="GlossaryTool.js" defer ></script>
 </html>

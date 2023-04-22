@@ -1,0 +1,60 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@4.7
+
+jobs:
+  build:
+    docker:
+      - image: circleci/openjdk:8-jdk
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      - run: sudo apt-get update && sudo apt-get install -y maven
+
+      - run:
+          name: Run Tests with Code Coverage
+          command: mvn cobertura:cobertura
+
+      - run:
+          name: Upload Code Coverage Report
+          command: bash <(curl -s https://codecov.io/bash)
+
+      - save_cache:
+          key: v1-dependencies-{{ checksum "pom.xml" }}
+          paths:
+            - ~/.m2
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - target/site/cobertura
+
+  deploy:
+    docker:
+      - image: docker/compose:1.29.1
+
+    working_directory: ~/repo
+
+    steps:
+      - attach_workspace:
+          at: .
+
+      - run:
+          name: Deploy
+          command: |
+            echo "Deploying..."
+
+workflows:
+  sample:
+    jobs:
+      - node/test:
+          version: '16.10'
+          pkg-manager: npm
+      - build:
+          requires:
+            - node/test
+

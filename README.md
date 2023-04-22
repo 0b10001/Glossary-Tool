@@ -10,7 +10,12 @@ Glossary-Tool is a multimedia and multilingual glossary tool developed as a stan
 The Glossary-Tool project is developed by the following group members:
 
 
-![Minion](https://octodex.github.com/bewitchedtocat/)
+![Minion](https://octodex.github.com/images/minion.png)
+![Stormtroopocat](https://octodex.github.com/images/stormtroopocat.jpg "The Stormtroopocat")
+
+![Alt text][id]
+
+[id]: https://octodex.github.com/images/dojocat.jpg  "The Dojocat"
 
 - Teboho Molise, Malosi Kganyago, Mpho M, Puseletso
 

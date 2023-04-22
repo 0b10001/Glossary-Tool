@@ -6,13 +6,6 @@ Glossary-Tool is a multimedia and multilingual glossary tool developed as a stan
 
 - The client for Glossary-Tool is Dr. Gerrit Wissing.
 
-# Developers
-The Glossary-Tool project is developed by the following group members:
-
-
-
-- Teboho Molise, Malosi Kganyago, Mpho M, Puseletso
-
 # Circle CI
 
 [![CircleCI](https://img.shields.io/circleci/build/github/0b10001/Glossary-Tool/main)](https://github.com/0b10001/Glossary-Tool.git)

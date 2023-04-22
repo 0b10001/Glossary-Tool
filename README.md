@@ -4,12 +4,15 @@ Glossary-Tool is a multimedia and multilingual glossary tool developed as a stan
 
 # Client
 
-The client for Glossary-Tool is Dr. Gerrit Wissing.
+- The client for Glossary-Tool is Dr. Gerrit Wissing.
 
 # Developers
 The Glossary-Tool project is developed by the following group members:
 
-. Teboho Molise, Malosi Kganyago, Mpho M, Puseletso 
+
+![Minion](https://octodex.github.com/bewitchedtocat/)
+
+- Teboho Molise, Malosi Kganyago, Mpho M, Puseletso
 
 # Circle CI
 

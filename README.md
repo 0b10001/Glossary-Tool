@@ -10,9 +10,6 @@ Glossary-Tool is a multimedia and multilingual glossary tool developed as a stan
 The Glossary-Tool project is developed by the following group members:
 
 
-## Images
-
-![Minion](https://octodex.github.com/images/minion.png width="100" height="100")
 
 - Teboho Molise, Malosi Kganyago, Mpho M, Puseletso
 

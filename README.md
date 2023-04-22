@@ -15,12 +15,8 @@ The Glossary-Tool project is developed by the following group members:
 
 # Circle CI
 
-- CircleCI is used as the continuous integration and delivery platform for the Glossary-Tool project. The badge below shows the current build status of the - main branch on GitHub:
-
 [![CircleCI](https://img.shields.io/circleci/build/github/0b10001/Glossary-Tool/main)](https://github.com/0b10001/Glossary-Tool.git)
 
 # CodeCov
-
-- Codecov is a code coverage tool that provides a badge to display the current code coverage percentage and branch being tracked.
 
  [![codecov](https://codecov.io/gh/<0b10001>/<Glossary-Tool>/branch/main/graph/badge.svg)](https://codecov.io/gh/<0b10001>/<Glossary-Tool>)

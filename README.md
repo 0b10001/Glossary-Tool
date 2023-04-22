@@ -12,4 +12,4 @@ Glossary-Tool is a multimedia and multilingual glossary tool developed as a stan
 
 # CodeCov
 
- [![codecov](https://codecov.io/gh/<0b10001>/<Glossary-Tool>/branch/main/graph/badge.svg)](https://codecov.io/gh/<0b10001>/<Glossary-Tool>)
+[![codecov](https://codecov.io/gh/0b10001/Glossary-Tool/branch/main/graph/badge.svg?token=GX0EGOHG5D)](https://codecov.io/gh/0b10001/Glossary-Tool)

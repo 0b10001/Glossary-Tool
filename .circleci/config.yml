@@ -16,8 +16,12 @@ jobs:
       - run:
           name: Run tests
           command: yarn test --coverage
-      - codecov/upload:
-          flags: -f coverage/lcov.info
+      - run:
+          name: Upload coverage report
+          command: |
+            curl -Os https://uploader.codecov.io/latest/linux/codecov
+            chmod +x codecov
+            ./codecov
 
 workflows:
   sample:

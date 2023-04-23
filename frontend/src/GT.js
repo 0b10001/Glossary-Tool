@@ -1,14 +1,19 @@
-
+//importing firebase
 import {initializeApp} from 'firebase/app';
+
+//imports from firestore
 import {
-    collection,getFirestore,getDocs, onSnapshot
+    collection,getFirestore,getDocs, onSnapshot,setDoc,doc,updateDoc, increment
 } from 'firebase/firestore';
+
+//imports from firebase's storage
 import {
   getStorage,listAll,ref,getDownloadURL
 }from 'firebase/storage';
 
 
 
+//our firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyA-TNh57VzJUFuYlFC9YEkV0CpWEXyIvFQ",
     authDomain: "glossary--tool.firebaseapp.com",
@@ -18,8 +23,6 @@ const firebaseConfig = {
     appId: "1:779250629314:web:8b39974fb23604e446595b",
     measurementId: "G-9XDY3QX4WE"
 };
-
-console.log("were here")
 
 
 //initialize firebase app
@@ -52,14 +55,20 @@ const soundIcon = document.getElementById('sound');
 const videoIcon= document.getElementById('video');
 const imageIcon = document.getElementById('image');
 const closeIcon = document.getElementById('close');
+const goodIcon = document.getElementById('Good');
+const badIcon = document.getElementById('Bad');
+//const DefDiv = document.getElementsByClassName('definitions');
+//const video = document.getElementById('wordVid');
+//const vidDiv = document.getElementById('VidofWord');
 
 
 //Hiding the video clickable images since they are not functional as of yet
 videoIcon.style.visibility="hidden";
 
-//Hide  the word picture at first
-pictureWord.style.visibility='visible';
-
+//hide the video at first
+videoIcon.style.visibility='hidden';
+///video.style.visibility='hidden';
+//vidDiv.style.visibility='hidden';
 
 
 //Going into the background page where the word is
@@ -80,50 +89,61 @@ if (word==null){
     window.stop();
 }
 
-//if there is whitespace in show error
+//if there is whitespace in word, show error
 if (/\s/.test(finalWord)){
+    //alert the user
     alert("Double click only one word please");
     //stop the window
     window.stop();
 }else{
     //run through the wordlist
     let wordFound = false;
+    //initialise list that will carry the wordDetails object
     wordDetails = [];
 
 
-    //real time collection data
+    //real time collection data, on any change
     onSnapshot(WordscolRef,(snapshot) =>{
+        //go through every document until the word is found
         snapshot.docs.every((doc)=>{
             if (({id:doc.id}.id) == finalWord){
+                //if the word is found, do this
+
+                //set the wordfound boolean to true
                 wordFound = true;
+                
                 //showing the translation since the word is available in our database
                 document.getElementById('trans').style.visibility="visible";
 
-                //making sound and image visible
-                soundIcon.style.visibility="visible";
-                imageIcon.style.visibility="visible";
+                //make the video and image icons hidden since they are not functional
+                imageIcon.style.visibility="hidden";
+                videoIcon.style.visibility="hidden";
+                
+                //add the data of the found document to the wordDetails list
                 wordDetails.push({...doc.data(), id:doc.id});
+                
 
                 //Make the word in the header our final word
                 headerWord.innerHTML = finalWord;
+                
 
                 //if the definition column in wordlist is not empty then populate the field
-                if(wordDetails[0].Definition!="" && wordDetails[0].Definition!="N\/A"){
+                if(wordDetails[0].Definition!="" && wordDetails[0].Definition!="None"){
                     definition.innerHTML = "Definition: ".bold() + wordDetails[0].Definition;
                 }
 
                 //if the example column in wordlist is not empty then populate the field
-                if(wordDetails[0].Example!="" &&  wordDetails[0].Example!="N\/A"){
+                if(wordDetails[0].Example!="" &&  wordDetails[0].Example!="None"){
                     egSentence.innerHTML = "Example sentence: ".bold() + wordDetails[0].Example;
                 }
 
                 //if the similar column in wordlist is not empty then populate the field
-                if(wordDetails[0].Synonym!="" && wordDetails[0].Synonym!="N\/A"){
+                if(wordDetails[0].Synonym!="" && wordDetails[0].Synonym!="None"){
                     simWords.innerHTML = "Word[s] with similar meaning: ".bold() + wordDetails[0].Synonym;
                 }
 
                 //if the notMean column in wordlist is not empty then populate the field
-                if(wordDetails[0].WhatWordDoesNotMeanHere!=""&& wordDetails[0].WhatWordDoesNotMeanHere!="N\/A"){
+                if(wordDetails[0].WhatWordDoesNotMeanHere!=""&& wordDetails[0].WhatWordDoesNotMeanHere!="None"){
                     notMean.innerHTML = "What the word does NOT mean here: ".bold() + wordDetails[0].WhatWordDoesNotMeanHere;
                 }
                 //stop the loop
@@ -133,17 +153,27 @@ if (/\s/.test(finalWord)){
             return true;
         })
     })
+    //delay the program by a second
+    delay(1000);
+    
     if (wordFound == false){
+      //if wordFound is still false then do this
+
+      //initialise details
+      //add word with details into firestore
+      findDetailsaddDocument();
+        
       //since word is not found, just have the word selected as the header
       headerWord.innerHTML = finalWord;
 
       //Display when this this word is not in our array
       definition.innerHTML = "Word not available".bold();
+        
       //hiding the translation since the word is not available in our database
       document.getElementById('trans').style.visibility="hidden";
-      //hiding sound,video and image since the word is not there
+        
+      //hiding video and image since the word is not there
       videoIcon.style.visibility="hidden";
-      soundIcon.style.visibility="hidden";
       imageIcon.style.visibility="hidden";
     }
 }
@@ -158,110 +188,110 @@ language.onchange = function(){
   switch (true){
     case lang == "Afrikaans":
       //set the translation on the popup if there translation colum for that row is not empty
-      if(wordDetails[0].Afrikaans!=""&& wordDetails[0].Afrikaans!="N\/A"){
+      if(wordDetails[0].Afrikaans!=""&& wordDetails[0].Afrikaans!="None"){
         translation.innerHTML = wordDetails[0].Afrikaans;
       }
       else {
-        //say ther is no translation
+        //say there is no translation
         translation.innerHTML = "no translation";
       }
       break;
      
     case lang == "isiNdebele":
        //set the translation on the popup if there translation colum for that row is not empty
-      if(wordDetails[0].isiNdebele!=""&& wordDetails[0].isiNdebele!="N\/A"){
+      if(wordDetails[0].isiNdebele!=""&& wordDetails[0].isiNdebele!="None"){
         translation.innerHTML = wordDetails[0].isiNdebele;
       }
       else {
-        //say ther is no translation
+        //say there is no translation
         translation.innerHTML = "no translation";
       }
       break;
 
     case lang == "isiXhosa":
        //set the translation on the popup if there translation colum for that row is not empty
-      if(wordDetails[0].isiXhosa!=""&& wordDetails[0].isiXhosa!="N\/A"){
+      if(wordDetails[0].isiXhosa!=""&& wordDetails[0].isiXhosa!="None"){
         translation.innerHTML = wordDetails[0].isiXhosa;
       }
       else {
-        //say ther is no translation
+        //say there is no translation
         translation.innerHTML = "no translation";
       }
       break;
 
     case lang == "isiZulu":
        //set the translation on the popup if there translation colum for that row is not empty
-      if(wordDetails[0].isiZulu!=""&& wordDetails[0].isiZulu!="N\/A"){
+      if(wordDetails[0].isiZulu!=""&& wordDetails[0].isiZulu!="None"){
         translation.innerHTML = wordDetails[0].isiZulu;
       }
       else {
-        //say ther is no translation
+        //say there is no translation
         translation.innerHTML = "no translation";
       }
       break;
 
     case lang == "Sepedi":
        //set the translation on the popup if there translation colum for that row is not empty
-      if(wordDetails[0].Sepedi!=""&& wordDetails[0].Sepedi!="N\/A"){
+      if(wordDetails[0].Sepedi!=""&& wordDetails[0].Sepedi!="None"){
         translation.innerHTML = wordDetails[0].Sepedi;
       }
       else {
-        //say ther is no translation
+        //say there is no translation
         translation.innerHTML = "no translation";
       }
       break;
 
     case lang == "Sesotho":
        //set the translation on the popup if there translation colum for that row is not empty
-      if(wordDetails[0].Sesotho!=""&& wordDetails[0].Sesotho!="N\/A"){
+      if(wordDetails[0].Sesotho!=""&& wordDetails[0].Sesotho!="None"){
         translation.innerHTML = wordDetails[0].Sesotho;
       }
       else {
-        //say ther is no translation
+        //say there is no translation
         translation.innerHTML = "no translation";
       }
       break;
 
     case lang == "Setswana":
        //set the translation on the popup if there translation colum for that row is not empty
-      if(wordDetails[0].Setswana!=""&& wordDetails[0].Setswana!="N\/A"){
+      if(wordDetails[0].Setswana!=""&& wordDetails[0].Setswana!="None"){
         translation.innerHTML = wordDetails[0].Setswana;
       }
       else {
-        //say ther is no translation
+        //say there is no translation
         translation.innerHTML = "no translation";
       }
       break;
 
     case lang == "siSwati":
        //set the translation on the popup if there translation colum for that row is not empty
-      if(wordDetails[0].siSwati!=""&& wordDetails[0].siSwati!="N\/A"){
+      if(wordDetails[0].siSwati!=""&& wordDetails[0].siSwati!="None"){
         translation.innerHTML = wordDetails[0].siSwati;
       }
       else {
-        //say ther is no translation
+        //say there is no translation
         translation.innerHTML = "no translation";
       }
       break;
 
-    case lang == "Tshivenḓa":
+    case lang == "Tshivenda":
        //set the translation on the popup if there translation colum for that row is not empty
-      if(wordDetails[0].Tshivenḓa!=""&& wordDetails[0].Tshivenḓa!="N\/A"){
-        translation.innerHTML = wordDetails[0].Tshivenḓa;
+      if(wordDetails[0].Tshivenda!=""&& wordDetails[0].Tshivenda!="None"){
+        translation.innerHTML = wordDetails[0].Tshivenda;
       }
       else {
-        //say ther is no translation
+        //say there is no translation
         translation.innerHTML = "no translation";
       }
       break;
 
     case lang == "Xitsonga":
       //set the translation on the popup if there translation colum for that row is not empty
-      if(wordDetails[0].Xitsonga!=""&& wordDetails[0].Xitsonga!="N\/A"){
+      if(wordDetails[0].Xitsonga!=""&& wordDetails[0].Xitsonga!="None"){
         translation.innerHTML = wordDetails[0].Xitsonga;
       }
       else {
-        //say ther is no translation
+        //say there is no translation
         translation.innerHTML = "no translation";
       }
       break;
@@ -270,6 +300,11 @@ language.onchange = function(){
 
 }
 
+//delay the running time
+function delay(time){
+  //return what will only be returned after the time
+  return new Promise(resolve => setTimeout(resolve,time));
+}
 
 //when thumbs down is clciked do this
 function incBad(){

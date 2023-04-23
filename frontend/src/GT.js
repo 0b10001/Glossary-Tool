@@ -271,77 +271,58 @@ language.onchange = function(){
 }
 
 
-//Up clicking the image icon this runs
+//when thumbs down is clciked do this
+function incBad(){
+  //field going to change
+  const fieldChange = {Bad: increment(1)};
+  //update the document
+  updateDoc(doc(db, "words", finalWord),fieldChange);
+  
+  //make the icons hidden
+  goodIcon.style.visibility="hidden";
+  badIcon.style.visibility="hidden";
+}
+
+//when thumbs up is clciked do this
+function incGood(){
+  //field going to change
+  const fieldChange = {Good: increment(1)};
+  //update the document
+  updateDoc(doc(db, "words", finalWord),fieldChange);
+
+  //make the icons hidden
+  goodIcon.style.visibility="hidden";
+  badIcon.style.visibility="hidden";
+}
+
+//Upon clicking the image icon this runs
 function showImage(){
-  
-  try{
-    const ImageRef = wordDetails[0].Graphic;
-    pictureWord.src=ImageRef;
-    pictureWord.style.visibility='visible';
-  }catch(Exception){
-    console.log("Something went wrong");
-  }
-
-  
-
-  //code to get the ref
-  /*
-  const imageListRef = ref(storage, "Word_Images");
-
-  listAll(imageListRef).then((listResult) => {
-    listResult.items.forEach((item) => {
-    if (item.name.startsWith(finalWord)) {
-      getDownloadURL(item).then((url) => {
-        // changing the img's src to be that of the one online
-        pictureWord.src=url;
-        console.log("image url: " + url);
-        pictureWord.style.visibility='visible';
-        
-      });
-    }
-  });
-  }).catch((error) => {
-    console.log(error);
-  });
-  */
-  
 }
 
 //when sound icon is clicked this will run
 function playSound(){
   
   try{
-    const soundRef = wordDetails[0].SoundClip;
-    let audio = new Audio(soundRef);
-    audio.play();
+    //initiate the speech synthesis utterance
+    const utterance = new SpeechSynthesisUtterance(finalWord);
+
+    //control the pitch, speed and volume
+    utterance.pitch = 1;
+    utterance.rate = 0.5;
+    utterance.volume = 2;
+
+    //speak
+    speechSynthesis.speak(utterance);
+    
   }catch(Exception){
-     console.log("Something went wrong");
+    //if it does not work , log the error
+     console.log(Exception);
   }
-  
+}
 
 
-
-  //code to get the ref
-  /*
-  const soundsListRef = ref(storage, "Word_Sounds");
-
-  listAll(soundsListRef).then((listResult) => {
-    listResult.items.forEach((item) => {
-    if (item.name.startsWith(finalWord)) {
-      getDownloadURL(item).then((url) => {
-        console.log("sound url: " + url);
-        let audio = new Audio(url);
-        audio.play();
-       
-      });
-    }
-  });
-    console.log(listResult);
-  }).catch((error) => {
-    console.log(error);
-  });
-  */
-
+//when video icon is clicked this will run
+function playVideo(){
 }
 
 //Upon clicking the close icon this runs
@@ -350,6 +331,11 @@ function doClose(){
     window.close();
 
 }
+
+//on click listeners
 closeIcon.addEventListener('click',doClose);
 imageIcon.addEventListener('click',showImage);
+videoIcon.addEventListener('click',playVideo);
 soundIcon.addEventListener('click',playSound);
+goodIcon.addEventListener('click',incGood);
+badIcon.addEventListener('click',incBad);

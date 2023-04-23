@@ -300,6 +300,137 @@ language.onchange = function(){
 
 }
 
+
+function findDetailsaddDocument(){
+            //initialise the translation array
+            const translationarray = [];
+
+            //initialise the definition, synonym, antonyms and example
+            var def = "";
+            var synonym= "";
+            var antonyms = "";
+            var example ="";
+
+            //API key for dictionary api
+            var thesaurusApiKey = "27f79564-22f5-40fb-b470-349be9fe5935";
+
+            //initialise the url that will be sent with the word and key in it
+            var thesaurusUrl = "https://www.dictionaryapi.com/api/v3/references/ithesaurus/json/" + finalWord + "?key=" + thesaurusApiKey ;
+            //fetch the data
+            return fetch(thesaurusUrl)
+            .then(response => response.json())
+              
+              .then(data => {
+                //set data and use it
+                // Get the first synonym from the first definition
+                synonym = data[0].meta.syns[0][0];
+                
+                //get antonyms
+                antonyms = data[0].meta.ants[0];
+                
+                //get the example and modify it
+                example = data[0].def[0].sseq[0][0][1].dt[1][1][0].t;
+                example = example.replace(/\{it\}/g, '').replace(/\{\/it\}/g, '');
+                
+                //get the definition of the word
+                def = data[0].shortdef[0];
+
+               
+                
+                
+            // Second API: Get translations using mymemory API
+            //initialise the requests list
+            const requests = [];
+
+            //initialise the language pairs, the format of how they will be searched
+            const languagePairs = [
+              {code: 'af', name: 'Afrikaans'},
+              {code: 'xh', name: 'Xhosa'},
+              {code: 'zu', name: 'Zulu'},
+              {code: 'st', name: 'Sotho'},
+              {code: 'tn', name: 'Tswana'},
+              {code: 'nso', name: 'Sepedi'},
+              {code:'nr', name: 'Ndebele'},
+              {code:'ts', name: 'Venda'},
+              {code:'ve', name: 'Swati'},
+              {code:'ts', name: 'Tsonga'}
+            ];
+
+            //initialise the myMemoryUrl and then use it to fetch translations for each language
+            for (const pair of languagePairs) {
+              const myMemoryUrl = `https://api.mymemory.translated.net/get?q=${finalWord}&langpair=en|${pair.code}`;
+              requests.push(fetch(myMemoryUrl));
+            }
+           
+            //wait until they are all done
+            Promise.all(requests)
+              .then(responses => Promise.all(responses.map(resp => resp.json())))
+              //set the data that is gotten after response
+              .then(data => {
+                
+                //initialise translations
+                let translations = '';
+
+                for (let i = 0; i < data.length; i++) {
+                  //go through the data and get the different translations
+
+                  //set each translation
+                  const translation = data[i].responseData.translatedText;
+
+                  //Set the language corresponding to the translation
+                  const languageName = languagePairs[i].name;
+
+                  //increment the translations list
+                  translations += `${languageName}: ${translation}<br>`;
+
+                  //push into the translation array that will be primarly used to store the objects with the languages and translations
+                  translationarray.push({ language: languageName, translation: translation });
+
+                }
+                
+                  //See what type your outputs are and what they hold 
+                // console.log(typeof synonym,synonym);
+                // console.log(typeof antonyms, antonyms);
+                // console.log(typeof example, example);
+                // console.log(typeof def, def);
+                // console.log(translationarray);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                //try to set document
+                try{
+                  //set a new document called finalWord that will hold the details
+                  setDoc(doc(db, "words", finalWord),info);
+                  }
+                catch(Exception){
+                  //print error
+                  console.log(Exception);
+                }
+              }).catch(error => console.error(error)); //log error
+             
+          }).catch(error => console.error(error)); //log error
+           
+          // Empty the translations array after psrocessing
+          translationarray.length = 0;
+}
+
+                
+
+
+
 //delay the running time
 function delay(time){
   //return what will only be returned after the time

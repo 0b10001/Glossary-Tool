@@ -1,5 +1,5 @@
 // Import the module to be tested
-const { wordSelected } = require('content');
+const content = require('./content');
 
 // Mock the window object
 const mockWindow = {

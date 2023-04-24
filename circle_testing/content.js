@@ -20,5 +20,5 @@ function wordSelected() {
 }
 
 // Export the wordSelected function for testing purposes
-module.exports = { wordSelected };
+module.exports = wordSelected ;
 

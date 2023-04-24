@@ -394,20 +394,121 @@ function findDetailsaddDocument(){
                 // console.log(typeof example, example);
                 // console.log(typeof def, def);
                 // console.log(translationarray);
+                //initialize definition
+                let defi = "";
+                if (def){
+                  //if value from api search not undefined use the value
+                  defi = def;
+                }
 
+                //initialize example
+                let eg = "";
+                if (example){
+                  //if value from api search not undefined use the value
+                  eg = example;
+                }
 
+                //initialize synonym
+                let syn = "";
+                if (synonym){
+                  //if value from api search not undefined use the value
+                  syn = synonym;
+                }
 
+                //initialize not mean here
+                let notMeanHere = "";
+                if(antonyms){
+                  //if value from api search not undefined use the value
+                  notMeanHere = antonyms;
+                }
 
+                //initialise media
+                let Graphic = "";
+                let Movie = "";
 
+                //initailise languages
+                let Afrikaans = "";
+                let isiNdebele =  "";
+                let isiXhosa = "";
+                let isiZulu = "";
+                let Sepedi = "";
+                let Sesotho =  "";
+                let Setswana =  "";
+                let siSwati =  "";
+                let Tshivenda =  "";
+                let Xitsonga =  "";
 
+                if (translationarray[0] && translationarray[0].translation){
+                  //if the object at that index exists and the translation at the index exists then use it and set translation
+                  Afrikaans = translationarray[0].translation;
+                }
+                if (translationarray[6] && translationarray[6].translation){
+                  //if the object at that index exists and the translation at the index exists then use it and set translation
+                  isiNdebele =  translationarray[6].translation;
+                }
+                if (translationarray[1] && translationarray[1].translation){
+                  //if the object at that index exists and the translation at the index exists then use it and set translation
+                  isiXhosa = translationarray[1].translation;
+                }
+                if (translationarray[2] && translationarray[2].translation){
+                  //if the object at that index exists and the translation at the index exists then use it and set translation
+                  isiZulu = translationarray[2].translation;
+                }
+                if (translationarray[5] && translationarray[5].translation){
+                  //if the object at that index exists and the translation at the index exists then use it and set translation
+                  Sepedi =  translationarray[5].translation;
+                }
+                if (translationarray[3] && translationarray[3].translation){
+                  //if the object at that index exists and the translation at the index exists then use it and set translation
+                  Sesotho =  translationarray[3].translation;
+                }
+                if (translationarray[4] && translationarray[4].translation){
+                  //if the object at that index exists and the translation at the index exists then use it and set translation
+                  Setswana =  translationarray[4].translation;
+                }
+                if (translationarray[8] && translationarray[8].translation){
+                  //if the object at that index exists and the translation at the index exists then use it and set translation
+                  siSwati =  translationarray[8].translation;
+                }
+                if (translationarray[7] && translationarray[7].translation){
+                  //if the object at that index exists and the translation at the index exists then use it and set translation
+                  Tshivenda =  translationarray[7].translation;
+                }
+                if (translationarray[9] && translationarray[9].translation){
+                  //if the object at that index exists and the translation at the index exists then use it and set translation
+                  Xitsonga =  translationarray[9].translation;
+                }
 
+                
+                //initialise the reviews good and bad
+                let Bad = 0;
+                let Good = 0;
 
-
-
-
-
-
-
+                //see the values set
+                console.log(defi,eg,syn,notMeanHere,Graphic,Movie,Afrikaans,isiNdebele,
+                  isiXhosa,isiZulu,Sepedi,Sesotho,Setswana,siSwati,Tshivenda,Xitsonga,Bad,Good);
+                
+                //initialise the values going into firestore from the ones set above
+                const info = {
+                  Definition: defi,
+                  Example: eg, 
+                  Synonym: syn, 
+                  WhatWordDoesNotMeanHere: notMeanHere,
+                  Graphic: Graphic,
+                  Movie: Movie,
+                  Afrikaans: Afrikaans,
+                  isiNdebele: isiNdebele,
+                  isiXhosa: isiXhosa,
+                  isiZulu: isiZulu,
+                  Sepedi: Sepedi,
+                  Sesotho: Sesotho,
+                  Setswana: Setswana,
+                  siSwati: siSwati,
+                  Tshivenda: Tshivenda,
+                  Xitsonga: Xitsonga,
+                  Bad: Number(Bad),
+                  Good: Number(Good)
+                }
 
 
                 //try to set document

@@ -1,4 +1,4 @@
-const backRUN = require('./addNumbers');
+const addNumbers = require('./addNumbers');
 
 describe('addNumbers', () => {
   it('should add two numbers', () => {

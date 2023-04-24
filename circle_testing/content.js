@@ -1,40 +1,24 @@
-//Notification of run
-console.log("Chrome extension go?");
+// Notification of run
+console.log('Chrome extension go?');
 
-//initialising the selectedText variable
-let selectedText = "";
-
-//if there is a window do this
-if(typeof window!=='undefined'){
-    //Notification of being on the browser
-    console.log('you are on the browser');
-
-    //The window after we select a word with our cursor, what it should then do
-    window.addEventListener('mouseup', wordSelected);
-
-    function wordSelected(){
-        //Get the selected text from the window
-        let selectedText = window.getSelection().toString();
-        
-        //output it
-        console.log(selectedText);
-
-        //if there is something in the variable
-        if(selectedText.length>0){
-            //create message to send to background
-            let message ={
-                text: selectedText
-            };
-
-            //send the message
-            chrome.runtime.sendMessage(message);
-        }
-    }
-}else{
-    // not on the browser
-    console.log('you are on the server');
+// Add a listener for the "mouseup" event on the window object
+if (typeof window !== 'undefined') {
+  console.log('You are on the browser');
+  window.addEventListener('mouseup', wordSelected);
+} else {
+  console.log('You are on the server');
 }
 
+// Get the selected text from the window object and send it to the background
+function wordSelected() {
+  const selectedText = window.getSelection().toString();
+  console.log(selectedText);
+  if (selectedText.length > 0) {
+    const message = { text: selectedText };
+    chrome.runtime.sendMessage(message);
+  }
+}
 
-
+// Export the wordSelected function for testing purposes
+module.exports = { wordSelected };
 

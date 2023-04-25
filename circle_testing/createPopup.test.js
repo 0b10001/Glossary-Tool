@@ -1,8 +1,15 @@
 // createPopup.test.js
 const createPopup = require('./createPopup');
+const MockBrowser = require('mock-browser').mocks.MockBrowser;
 
 describe('createPopup', () => {
+  let mockBrowser;
+
   beforeEach(() => {
+    mockBrowser = new MockBrowser();
+    global.window = mockBrowser.getWindow();
+    global.document = mockBrowser.getDocument();
+    global.navigator = mockBrowser.getNavigator();
     window.open = jest.fn();
   });
 

@@ -8,6 +8,9 @@ const wordStorage = {
   },
   getWord() {
     return this.word;
+  },
+  deleteWord() {
+    this.word = '';
   }
 };
 

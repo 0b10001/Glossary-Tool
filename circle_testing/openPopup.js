@@ -21,8 +21,12 @@ function openPopup(url, name, width, height, type) {
 
   const popup = window.open(url, name, features);
 
-  if (!popup) {
+  if (popup == null || typeof popup === 'undefined') {
     throw new Error('Failed to open popup');
+  }
+
+  if (popup.closed) {
+    throw new Error('Popup was blocked');
   }
 
   return popup;

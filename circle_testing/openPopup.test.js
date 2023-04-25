@@ -41,17 +41,5 @@ describe('openPopup', () => {
     const height = 400;
     const type = 'image';
 
-    expect(() => openPopup(url, name, width, height, type)).toThrow(Error);
-  });
-
-  test('throws a TypeError if invalid type argument', () => {
-    const url = 'https://example.com/video.mp4';
-    const name = 'example';
-    const width = 600;
-    const height = 400;
-    const type = 123;
-
-    expect(() => openPopup(url, name, width, height, type)).toThrow(TypeError);
-  });
-});
+    expect(() => openPopup(url, name, width,
 

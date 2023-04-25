@@ -1,5 +1,14 @@
 const { backgroundRunning, receiver } = require('./src');
 
+// Mock the chrome.runtime.onMessage.addListener method
+jest.mock('chrome', () => ({
+  runtime: {
+    onMessage: {
+      addListener: jest.fn()
+    }
+  }
+}));
+
 // Unit test for backgroundRunning function
 describe('backgroundRunning', () => {
   it('should log "background running" to the console', () => {

@@ -1,4 +1,4 @@
-function test_wordSelected(wordSelectedFunction, window, console, chrome){
+function test_wordSelected(wordSelectedFunction, window, console, chrome) {
   window.getSelection = function() {
     return {
       toString: function() {
@@ -19,7 +19,7 @@ function test_wordSelected(wordSelectedFunction, window, console, chrome){
     messages.push(message);
   };
 
-  wordSelected();
+  wordSelectedFunction();
   
   if (logs.includes("test")) {
     console.log("Test passed: Selected text is printed to console");

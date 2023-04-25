@@ -1,7 +1,7 @@
 const wordStorage = require('./wordStorage');
 
 test('sets and gets a word from word storage', () => {
-  const expectedWord = 90 //'Hello, world!';
+  const expectedWord = 'Hello, world!';
   wordStorage.setWord(expectedWord);
   const actualWord = wordStorage.getWord();
   expect(actualWord).toBe(expectedWord);

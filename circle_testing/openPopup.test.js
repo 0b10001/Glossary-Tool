@@ -1,40 +1,57 @@
 const openPopup = require('./openPopup');
 
-test('opens a popup window with the correct dimensions and URL for image', () => {
-  const url = 'https://example.com/image.jpg';
-  const name = 'example';
-  const width = 600;
-  const height = 400;
-  const type = 'image';
+describe('openPopup', () => {
+  beforeEach(() => {
+    // Set up the jsdom environment before each test
+    const jsdom = require('jsdom');
+    const { JSDOM } = jsdom;
+    const { document } = new JSDOM('').window;
+    global.document = document;
+    global.window = document.defaultView;
+  });
 
-  const popup = openPopup(url, name, width, height, type);
+  afterEach(() => {
+    // Clean up the jsdom environment after each test
+    delete global.document;
+    delete global.window;
+  });
 
-  expect(popup).toBeDefined();
-  expect(popup.closed).toBe(false);
-  expect(popup.location.href).toBe(url);
-  expect(popup.outerWidth).toBe(width);
-  expect(popup.outerHeight).toBe(height);
+  test('opens a popup window with the correct dimensions and URL for image', () => {
+    const url = 'https://example.com/image.jpg';
+    const name = 'example';
+    const width = 600;
+    const height = 400;
+    const type = 'image';
 
-  popup.close();
-});
+    const popup = openPopup(url, name, width, height, type);
 
-test('throws an error if invalid media type or file extension', () => {
-  const url = 'https://example.com/document.pdf';
-  const name = 'example';
-  const width = 600;
-  const height = 400;
-  const type = 'image';
+    expect(popup).toBeDefined();
+    expect(popup.closed).toBe(false);
+    expect(popup.location.href).toBe(url);
+    expect(popup.outerWidth).toBe(width);
+    expect(popup.outerHeight).toBe(height);
 
-  expect(() => openPopup(url, name, width, height, type)).toThrow(Error);
-});
+    popup.close();
+  });
 
-test('throws a TypeError if invalid type argument', () => {
-  const url = 'https://example.com/video.mp4';
-  const name = 'example';
-  const width = 600;
-  const height = 400;
-  const type = 123;
+  test('throws an error if invalid media type or file extension', () => {
+    const url = 'https://example.com/document.pdf';
+    const name = 'example';
+    const width = 600;
+    const height = 400;
+    const type = 'image';
 
-  expect(() => openPopup(url, name, width, height, type)).toThrow(TypeError);
+    expect(() => openPopup(url, name, width, height, type)).toThrow(Error);
+  });
+
+  test('throws a TypeError if invalid type argument', () => {
+    const url = 'https://example.com/video.mp4';
+    const name = 'example';
+    const width = 600;
+    const height = 400;
+    const type = 123;
+
+    expect(() => openPopup(url, name, width, height, type)).toThrow(TypeError);
+  });
 });
 

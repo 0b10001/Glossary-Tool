@@ -36,3 +36,7 @@ if (typeof window !== 'undefined') {
   console.log('you are on the server');
 }
 
+// Export the wordSelected function
+module.exports = {
+  wordSelected,
+};

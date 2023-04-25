@@ -1,4 +1,4 @@
-function test_wordSelected(wordSelected, window, console, chrome) {
+function test_wordSelected(wordSelectedFunction, window, console, chrome){
   window.getSelection = function() {
     return {
       toString: function() {

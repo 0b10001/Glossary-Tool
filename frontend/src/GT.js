@@ -3,7 +3,7 @@ import {initializeApp} from 'firebase/app';
 
 //imports from firestore
 import {
-    collection,getFirestore,getDocs, onSnapshot,setDoc,doc,updateDoc, increment
+    collection,getFirestore,getDoc, onSnapshot,setDoc,doc,updateDoc, increment
 } from 'firebase/firestore';
 
 //imports from firebase's storage
@@ -158,6 +158,20 @@ if (/\s/.test(finalWord)){
     
     if (wordFound == false){
       //if wordFound is still false then do this
+      //look for specific word to be sure
+      //SET ITS REF
+      const docRef = doc(db,'words',finalWord);
+
+      //get the document 
+      getDoc(docRef).then((doc) => {
+        if (!doc.data()) {
+          //if word does not exist then add document
+          //initialise details
+          //add word with details into firestore after checking if its not there again
+          findDetailsaddDocument();
+        }
+      })
+      
 
       //initialise details
       //add word with details into firestore

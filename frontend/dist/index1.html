@@ -27,14 +27,15 @@
                     style = "object-fit : max-content;
                     width:20px;
                     height:20px;
-                    padding-right: 15px;"></a>
+                    padding: 3px;
+                    margin-right: 15px;"></a>
                 <a><img src="/popup_images/thumbs-down.png" alt="Close" id="Bad"
                     style = "object-fit : max-content;
                     width:20px;
                     height:20px;
-                    padding-right: 70px;"></a>
+                    padding: 3px;
+                    margin-right: 70px;"></a>
 
-                
                 <a><img src="/popup_images/sound.png" alt="How the word is said" id="sound"
                     style = "object-fit : max-content;
                     width:24px;
@@ -66,12 +67,11 @@
         <hr>
         
         <div class="PicDefs">
+
+
             <div class="PictureOfWord" >
                 <a>
-                    <img id="wordPic"
-                    style = "object-fit : max-content;
-                    max-width:200px;
-                    max-height:200px;">
+                    <img id="wordPic" class="wordPic">
                 </a>
             </div>
 
@@ -110,7 +110,13 @@
             </div>
 
         </div>
-        
+        <div id = "signinPage" class="signinPage">
+            <a href="/dist/Signin.html" class="linkIn"><strong>Sign in</strong></a>
+        </div>
+        <div id = "signout" class="signout">
+            <p>You are signed in  <a href="" class="linkOut"><strong>Sign out</strong></a></p>
+        </div>
+        <div class="loader"></div>
 
     </div>
     

@@ -1,48 +1,21 @@
-//importing firebase
-import {initializeApp} from 'firebase/app';
+//BEGINNING OF LOCAL STORAGE CHECK (GET STATUS FOR USER)
+//initialize signedin,email, and dateTime
+let signedIn = false;
+let email = "";
+let dateTime;
 
-//imports from firestore
-import {
-    collection,getFirestore,getDoc, onSnapshot,setDoc,doc,updateDoc, increment
-} from 'firebase/firestore';
-
-//imports from firebase's storage
-import {
-  getStorage,listAll,ref,getDownloadURL
-}from 'firebase/storage';
-
-
-
-//our firebase configuration
-const firebaseConfig = {
-    apiKey: "AIzaSyA-TNh57VzJUFuYlFC9YEkV0CpWEXyIvFQ",
-    authDomain: "glossary--tool.firebaseapp.com",
-    projectId: "glossary--tool",
-    storageBucket: "glossary--tool.appspot.com",
-    messagingSenderId: "779250629314",
-    appId: "1:779250629314:web:8b39974fb23604e446595b",
-    measurementId: "G-9XDY3QX4WE"
-};
+//if there is somethin in the local Storage then
+if(localStorage.length>0){
+  //set signedin,email, and dateTime
+  signedIn = localStorage.getItem('signedIn');
+  email = localStorage.getItem('email');
+  dateTime = localStorage.getItem('dateTime');
+}
+//END OF LOCAL STORAGE CHECK
 
 
-//initialize firebase app
-initializeApp(firebaseConfig);
-
-//variable to sllow us to make references to the storage on firebase
-const storage = getStorage(initializeApp(firebaseConfig));
-
-//initialize services
-const db = getFirestore();
-
-//collection reference
-const WordscolRef = collection(db, 'words');
-
-//initialize the array that will sotre the word once its found
-let wordDetails = []
-
+//BEGINNING OF THE VIEW (COMPONENTS ON THE HTML)
 //fetching components from the html file by id
-const popUp = document.getElementById('popUp');
-const btn1 = document.getElementById('btn1');
 const headerWord = document.getElementById('headerWord');
 const definition = document.getElementById('definition');
 const egSentence = document.getElementById('egSentence');
@@ -57,26 +30,28 @@ const imageIcon = document.getElementById('image');
 const closeIcon = document.getElementById('close');
 const goodIcon = document.getElementById('Good');
 const badIcon = document.getElementById('Bad');
-//const DefDiv = document.getElementsByClassName('definitions');
-//const video = document.getElementById('wordVid');
-//const vidDiv = document.getElementById('VidofWord');
+const loader = document.querySelector(".loader");
+const toSignIn = document.getElementById("signinPage");
+const toSignOut = document.getElementById("signout");
 
+//hide signOut and signIn
+toSignOut.style.display="none";
+toSignIn.style.display = "none";
 
-//Hiding the video clickable images since they are not functional as of yet
-videoIcon.style.visibility="hidden";
+//hide the word picture at first
+pictureWord.style.visibility='hidden';
 
 //hide the video at first
 videoIcon.style.visibility='hidden';
-///video.style.visibility='hidden';
-//vidDiv.style.visibility='hidden';
+//END OF THE VIEW (COMPONENTS ON THE HTML)
 
 
+//BEGINNING OF WORKING WITH THE SELECTED WORD HERE
 //Going into the background page where the word is
 let bgpage = chrome.extension.getBackgroundPage();
 
 //initialising our word to be the word from the background page
 let word = bgpage.word;
-
 
 //removing spaces from the beginning and end of the word
 let finalWord=word.trim();
@@ -88,6 +63,43 @@ finalWord=finalWord.toLowerCase();
 if (word==null){
     window.stop();
 }
+//initialize wordFound
+let wordFound = false;
+
+//initialize the array that will store the word's details once its found
+let wordDetails = []
+
+
+//BEGINNING OF WORKING WITH DATABASE CONNECTION
+//importing firebase
+import {initializeApp} from 'firebase/app';
+
+//imports from firestore
+import {
+    collection,getFirestore,getDoc, onSnapshot,setDoc,doc,updateDoc, increment, Timestamp,addDoc
+} from 'firebase/firestore';
+
+//our firebase configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyA-TNh57VzJUFuYlFC9YEkV0CpWEXyIvFQ",
+    authDomain: "glossary--tool.firebaseapp.com",
+    projectId: "glossary--tool",
+    storageBucket: "glossary--tool.appspot.com",
+    messagingSenderId: "779250629314",
+    appId: "1:779250629314:web:8b39974fb23604e446595b",
+    measurementId: "G-9XDY3QX4WE"
+};
+
+//initialize firebase app
+initializeApp(firebaseConfig);
+
+//initialize services
+const db = getFirestore();
+
+//collection reference
+const WordscolRef = collection(db, 'words');
+//END OF ESTABLISHING DATABASE CONNECTION
+
 
 //if there is whitespace in word, show error
 if (/\s/.test(finalWord)){
@@ -97,35 +109,44 @@ if (/\s/.test(finalWord)){
     window.stop();
 }else{
     //run through the wordlist
-    let wordFound = false;
-    //initialise list that will carry the wordDetails object
-    wordDetails = [];
-
-
     //real time collection data, on any change
-    onSnapshot(WordscolRef,(snapshot) =>{
-        //go through every document until the word is found
-        snapshot.docs.every((doc)=>{
-            if (({id:doc.id}.id) == finalWord){
+    onSnapshot(WordscolRef,(snapshot)=>{
+          //go through every document until the word is found
+          snapshot.docs.every((doc) => {
+              if (({id:doc.id}.id) == finalWord){
                 //if the word is found, do this
 
                 //set the wordfound boolean to true
                 wordFound = true;
-                
+
+                //hide loader
+                loader.style.visibility="hidden";
+              
+
                 //showing the translation since the word is available in our database
                 document.getElementById('trans').style.visibility="visible";
+
+                //making sound icon visble
+                soundIcon.style.visibility="visible";
+
+                //making rating icons visisble
+                goodIcon.style.visibility="visible";
+                badIcon.style.visibility="visible";
 
                 //make the video and image icons hidden since they are not functional
                 imageIcon.style.visibility="hidden";
                 videoIcon.style.visibility="hidden";
-                
+
                 //add the data of the found document to the wordDetails list
                 wordDetails.push({...doc.data(), id:doc.id});
-                
 
                 //Make the word in the header our final word
                 headerWord.innerHTML = finalWord;
-                
+
+                if(wordDetails[0].Graphic!="" && wordDetails[0].Graphic!="None"){
+                  //if there is a graphic show the icon for image
+                  imageIcon.style.visibility="visible";
+                }
 
                 //if the definition column in wordlist is not empty then populate the field
                 if(wordDetails[0].Definition!="" && wordDetails[0].Definition!="None"){
@@ -146,6 +167,18 @@ if (/\s/.test(finalWord)){
                 if(wordDetails[0].WhatWordDoesNotMeanHere!=""&& wordDetails[0].WhatWordDoesNotMeanHere!="None"){
                     notMean.innerHTML = "What the word does NOT mean here: ".bold() + wordDetails[0].WhatWordDoesNotMeanHere;
                 }
+                
+                //if signedIn do this
+                if (signedIn == "true"){
+                  //show signOut
+                  toSignOut.style.display = "block";
+                  //add the data into log database if signedin
+                  logRequest();
+                }
+                else{//if not signed in do this
+                  //show signIn
+                  toSignIn.style.display = "block";
+                }
                 //stop the loop
                 return false;
             }
@@ -153,9 +186,6 @@ if (/\s/.test(finalWord)){
             return true;
         })
     })
-    //delay the program by a second
-    delay(1000);
-    
     if (wordFound == false){
       //if wordFound is still false then do this
       //look for specific word to be sure
@@ -171,30 +201,356 @@ if (/\s/.test(finalWord)){
           findDetailsaddDocument();
         }
       })
-      
-
-      //initialise details
-      //add word with details into firestore
-      findDetailsaddDocument();
-        
       //since word is not found, just have the word selected as the header
       headerWord.innerHTML = finalWord;
 
-      //Display when this this word is not in our array
-      definition.innerHTML = "Word not available".bold();
-        
       //hiding the translation since the word is not available in our database
       document.getElementById('trans').style.visibility="hidden";
-        
+
       //hiding video and image since the word is not there
       videoIcon.style.visibility="hidden";
       imageIcon.style.visibility="hidden";
+
+      //hiding good and bad since the word is not there
+      goodIcon.style.visibility="hidden";
+      badIcon.style.visibility="hidden";
     }
 }
+//END OF WORKING WITH SELECTED WORD
+
+
+//BEGINNING OF FUNCTIONS CALLED IN PROCESS
+//Getting a word not present in the database
+function findDetailsaddDocument(){
+  //initialise the translation array
+  const translationarray = [];
+
+  //initialise the definition, synonym, antonyms and example
+  var def = "";
+  var synonym= "";
+  var antonyms = "";
+  var example ="";
+
+  //API key for dictionary api
+  var thesaurusApiKey = "27f79564-22f5-40fb-b470-349be9fe5935";
+
+  //initialise the url that will be sent with the word and key in it
+  var thesaurusUrl = "https://www.dictionaryapi.com/api/v3/references/ithesaurus/json/" + finalWord + "?key=" + thesaurusApiKey ;
+  //fetch the data
+  fetch(thesaurusUrl)
+  .then(response => response.json())
+    .then(data => {
+      //set data and use it
+      // Get the first synonym from the first definition
+      synonym = data[0].meta.syns[0][0];
+      
+      //get antonyms
+      antonyms = data[0].meta.ants[0];
+      
+      //get the example and modify it
+      example = data[0].def[0].sseq[0][0][1].dt[1][1][0].t;
+      example = example.replace(/\{it\}/g, '').replace(/\{\/it\}/g, '');
+      
+      //get the definition of the word
+      def = data[0].shortdef[0];
+
+  // Second API: Get translations using mymemory API
+  //initialise the requests list
+  const requests = [];
+
+  //initialise the language pairs, the format of how they will be searched
+  const languagePairs = [
+    {code: 'af', name: 'Afrikaans'},
+    {code: 'xh', name: 'Xhosa'},
+    {code: 'zu', name: 'Zulu'},
+    {code: 'st', name: 'Sotho'},
+    {code: 'tn', name: 'Tswana'},
+    {code: 'nso', name: 'Sepedi'},
+    {code:'nr', name: 'Ndebele'},
+    {code:'ts', name: 'Venda'},
+    {code:'ve', name: 'Swati'},
+    {code:'ts', name: 'Tsonga'}
+  ];
+
+  //initialise the myMemoryUrl and then use it to fetch translations for each language
+  for (const pair of languagePairs) {
+    const myMemoryUrl = `https://api.mymemory.translated.net/get?q=${finalWord}&langpair=en|${pair.code}`;
+    requests.push(fetch(myMemoryUrl));
+  }
+ 
+  //wait until they are all done
+  Promise.all(requests)
+    .then(responses => Promise.all(responses.map(resp => resp.json())))
+    //set the data that is gotten after response
+    .then(data => {
+      
+      //initialise translations
+      let translations = '';
+
+      for (let i = 0; i < data.length; i++) {
+        //go through the data and get the different translations
+
+        //set each translation
+        const translation = data[i].responseData.translatedText;
+
+        //Set the language corresponding to the translation
+        const languageName = languagePairs[i].name;
+
+        //increment the translations list
+        translations += `${languageName}: ${translation}<br>`;
+
+        //push into the translation array that will be primarly used to store the objects with the languages and translations
+        translationarray.push({ language: languageName, translation: translation });
+      }
+      
+        //See what type your outputs are and what they hold 
+      // console.log(typeof synonym,synonym);
+      // console.log(typeof antonyms, antonyms);
+      // console.log(typeof example, example);
+      // console.log(typeof def, def);
+      // console.log(translationarray);
+
+      //#################################
+      //initialize definition
+      let defi = "";
+      if (def){
+        //if value from api search not undefined use the value
+        defi = def;
+      }
+
+      //initialize example
+      let eg = "";
+      if (example){
+        //if value from api search not undefined use the value
+        eg = example;
+      }
+
+      //initialize synonym
+      let syn = "";
+      if (synonym){
+        //if value from api search not undefined use the value
+        syn = synonym;
+      }
+
+      //initialize not mean here
+      let notMeanHere = "";
+      if(antonyms){
+        //if value from api search not undefined use the value
+        notMeanHere = antonyms;
+      }
+      //initialise media
+      let Graphic = "";
+      let Movie = "";
+
+      //initailise languages
+      let Afrikaans = "";
+      let isiNdebele =  "";
+      let isiXhosa = "";
+      let isiZulu = "";
+      let Sepedi = "";
+      let Sesotho =  "";
+      let Setswana =  "";
+      let siSwati =  "";
+      let Tshivenda =  "";
+      let Xitsonga =  "";
+
+      if (translationarray[0] && translationarray[0].translation){
+        //if the object at that index exists and the translation at the index exists then use it and set translation
+        Afrikaans = translationarray[0].translation;
+      }
+      if (translationarray[6] && translationarray[6].translation){
+        //if the object at that index exists and the translation at the index exists then use it and set translation
+        isiNdebele =  translationarray[6].translation;
+      }
+      if (translationarray[1] && translationarray[1].translation){
+        //if the object at that index exists and the translation at the index exists then use it and set translation
+        isiXhosa = translationarray[1].translation;
+      }
+      if (translationarray[2] && translationarray[2].translation){
+        //if the object at that index exists and the translation at the index exists then use it and set translation
+        isiZulu = translationarray[2].translation;
+      }
+      if (translationarray[5] && translationarray[5].translation){
+        //if the object at that index exists and the translation at the index exists then use it and set translation
+        Sepedi =  translationarray[5].translation;
+      }
+      if (translationarray[3] && translationarray[3].translation){
+        //if the object at that index exists and the translation at the index exists then use it and set translation
+        Sesotho =  translationarray[3].translation;
+      }
+      if (translationarray[4] && translationarray[4].translation){
+        //if the object at that index exists and the translation at the index exists then use it and set translation
+        Setswana =  translationarray[4].translation;
+      }
+      if (translationarray[8] && translationarray[8].translation){
+        //if the object at that index exists and the translation at the index exists then use it and set translation
+        siSwati =  translationarray[8].translation;
+      }
+      if (translationarray[7] && translationarray[7].translation){
+        //if the object at that index exists and the translation at the index exists then use it and set translation
+        Tshivenda =  translationarray[7].translation;
+      }
+      if (translationarray[9] && translationarray[9].translation){
+        //if the object at that index exists and the translation at the index exists then use it and set translation
+        Xitsonga =  translationarray[9].translation;
+      }
+      //initialise the reviews good and bad
+      let Bad = 0;
+      let Good = 0;
+
+      //see the values set
+        //console.log(defi,eg,syn,notMeanHere,Graphic,Movie,Afrikaans,isiNdebele,
+        //isiXhosa,isiZulu,Sepedi,Sesotho,Setswana,siSwati,Tshivenda,Xitsonga,Bad,Good);
+
+        //get picture
+      try{
+        //set access key and upiUrl
+        const accessKey = "_MfV33cUzKWKBQxlbhoFlPrXvJNMRrhrBYkQGCk-tqI";
+        const apiUrl = `https://api.unsplash.com/search/photos?page=1&query=${finalWord}`;
+
+        //fetch the data in terms of the apiUrl
+        fetch(apiUrl, {
+          //set header with authorization
+          headers:{
+            Authorization: `Client-ID ${accessKey}`,
+          },
+          }).then(response => { //response is then used
+              if (!response.ok) { //if response is lower than 400 then throw error
+                throw new Error(response.status);
+              }
+              return response.json(); //show the json
+
+              }).then(data => { 
+                //if the data and data results  and the url and the regular are all defined then do this
+                if (data && data.results[0] && data.results[0].urls && data.results[0].urls.regular){
+                  //set photo url to the retreived url
+                  Graphic = data.results[0].urls.regular;
+                }
+                          
+                //initialise the values going into firestore from the ones set above
+                const info = {
+                  Definition: defi,
+                  Example: eg, 
+                  Synonym: syn, 
+                  WhatWordDoesNotMeanHere: notMeanHere,
+                  Graphic: Graphic,
+                  Movie: Movie,
+                  Afrikaans: Afrikaans,
+                  isiNdebele: isiNdebele,
+                  isiXhosa: isiXhosa,
+                  isiZulu: isiZulu,
+                  Sepedi: Sepedi,
+                  Sesotho: Sesotho,
+                  Setswana: Setswana,
+                  siSwati: siSwati,
+                  Tshivenda: Tshivenda,
+                  Xitsonga: Xitsonga,
+                  Bad: Number(Bad),
+                  Good: Number(Good)
+                }
+                //#####################################
+              
+                //try to set document
+                try{
+                  //set a new document called finalWord that will hold the details
+                  setDoc(doc(db, "words", finalWord),info);
+                  //newWordDone = true;
+                  }
+                catch(Exception){
+                  //print error
+                  console.log(Exception);
+                  //hide loader
+                  loader.classList.add("loader-hidden");
+                  //Word not found in api's so show message
+                  definition.innerHTML="Word cannot be found".bold();
+                }
+                
+              }).catch(error => { //if there is error
+                if (error.message === "403") {
+                  // Handle the 403 Forbidden error
+                  console.log("Access denied: You don't have permission to access this resource");
+                } else {
+                  // Handle other errors
+                  console.error(error);
+                }
+              });
+      }
+      catch(Exception){
+        //print error
+        console.log(Exception);
+      }
+    }).catch(error => {
+      console.error(error);
+      //hide loader
+      loader.classList.add("loader-hidden");
+      //Word not found in api's so show message
+      definition.innerHTML="Word cannot be found".bold();
+    }); //log error
+   
+}).catch(error => {
+  console.error(error);
+  //hide loader
+  loader.classList.add("loader-hidden");
+  //Word not found in api's so show message
+  definition.innerHTML="Word cannot be found".bold();
+}); //log error
+ 
+// Empty the translations array after processing
+translationarray.length = 0; 
+}
+
+//Logging a word if the user is signed in
+function logRequest(){
+  //initialize info going into document
+  const info = {
+    Word: finalWord,
+    dateTime: Timestamp.fromDate(new Date()),
+    UserEmail: email,
+    Definition: wordDetails[0].Definition,
+    Example: wordDetails[0].Example, 
+    Synonym: wordDetails[0].Synonym, 
+    WhatWordDoesNotMeanHere: wordDetails[0].WhatWordDoesNotMeanHere,
+    Graphic: wordDetails[0].Graphic,
+    Movie: wordDetails[0].Movie,
+    Afrikaans: wordDetails[0].Afrikaans,
+    isiNdebele: wordDetails[0].isiNdebele,
+    isiXhosa: wordDetails[0].isiXhosa,
+    isiZulu: wordDetails[0].isiZulu,
+    Sepedi: wordDetails[0].Sepedi,
+    Sesotho: wordDetails[0].Sesotho,
+    Setswana: wordDetails[0].Setswana,
+    siSwati: wordDetails[0].siSwati,
+    Tshivenda: wordDetails[0].Tshivenda,
+    Xitsonga: wordDetails[0].Xitsonga,
+    Bad: Number(wordDetails[0].Bad),
+    Good: Number(wordDetails[0].Good)
+  }
+  //try to set document
+  try{
+    //set ref to collection
+    const WordLogcolRef = collection(db, 'WordLog');
+    //add a new document with unique id that will hold the details
+    addDoc(WordLogcolRef,info);
+  }catch(Exception){
+    //print error
+    console.log(Exception);
+  }
+}
+//END OF FUNCTIONS CALLED IN PROCESS
+
+
+//BEGINNING OF ON CLICK FUNCTIONS
+//on click listener
+closeIcon.addEventListener('click',doClose);
+imageIcon.addEventListener('click',showImage);
+videoIcon.addEventListener('click',playVideo);
+soundIcon.addEventListener('click',playSound);
+goodIcon.addEventListener('click',incGood);
+badIcon.addEventListener('click',incBad);
+toSignOut.addEventListener('click',signOut);
 
 //Do this when the language clicked changes
 language.onchange = function(){
-  
   //setting the const that will change
   let lang = this.value;
   
@@ -309,280 +665,126 @@ language.onchange = function(){
         translation.innerHTML = "no translation";
       }
       break;
-    
   }
-
 }
 
-
-function findDetailsaddDocument(){
-            //initialise the translation array
-            const translationarray = [];
-
-            //initialise the definition, synonym, antonyms and example
-            var def = "";
-            var synonym= "";
-            var antonyms = "";
-            var example ="";
-
-            //API key for dictionary api
-            var thesaurusApiKey = "27f79564-22f5-40fb-b470-349be9fe5935";
-
-            //initialise the url that will be sent with the word and key in it
-            var thesaurusUrl = "https://www.dictionaryapi.com/api/v3/references/ithesaurus/json/" + finalWord + "?key=" + thesaurusApiKey ;
-            //fetch the data
-            return fetch(thesaurusUrl)
-            .then(response => response.json())
-              
-              .then(data => {
-                //set data and use it
-                // Get the first synonym from the first definition
-                synonym = data[0].meta.syns[0][0];
-                
-                //get antonyms
-                antonyms = data[0].meta.ants[0];
-                
-                //get the example and modify it
-                example = data[0].def[0].sseq[0][0][1].dt[1][1][0].t;
-                example = example.replace(/\{it\}/g, '').replace(/\{\/it\}/g, '');
-                
-                //get the definition of the word
-                def = data[0].shortdef[0];
-
-               
-                
-                
-            // Second API: Get translations using mymemory API
-            //initialise the requests list
-            const requests = [];
-
-            //initialise the language pairs, the format of how they will be searched
-            const languagePairs = [
-              {code: 'af', name: 'Afrikaans'},
-              {code: 'xh', name: 'Xhosa'},
-              {code: 'zu', name: 'Zulu'},
-              {code: 'st', name: 'Sotho'},
-              {code: 'tn', name: 'Tswana'},
-              {code: 'nso', name: 'Sepedi'},
-              {code:'nr', name: 'Ndebele'},
-              {code:'ts', name: 'Venda'},
-              {code:'ve', name: 'Swati'},
-              {code:'ts', name: 'Tsonga'}
-            ];
-
-            //initialise the myMemoryUrl and then use it to fetch translations for each language
-            for (const pair of languagePairs) {
-              const myMemoryUrl = `https://api.mymemory.translated.net/get?q=${finalWord}&langpair=en|${pair.code}`;
-              requests.push(fetch(myMemoryUrl));
-            }
-           
-            //wait until they are all done
-            Promise.all(requests)
-              .then(responses => Promise.all(responses.map(resp => resp.json())))
-              //set the data that is gotten after response
-              .then(data => {
-                
-                //initialise translations
-                let translations = '';
-
-                for (let i = 0; i < data.length; i++) {
-                  //go through the data and get the different translations
-
-                  //set each translation
-                  const translation = data[i].responseData.translatedText;
-
-                  //Set the language corresponding to the translation
-                  const languageName = languagePairs[i].name;
-
-                  //increment the translations list
-                  translations += `${languageName}: ${translation}<br>`;
-
-                  //push into the translation array that will be primarly used to store the objects with the languages and translations
-                  translationarray.push({ language: languageName, translation: translation });
-
-                }
-                
-                  //See what type your outputs are and what they hold 
-                // console.log(typeof synonym,synonym);
-                // console.log(typeof antonyms, antonyms);
-                // console.log(typeof example, example);
-                // console.log(typeof def, def);
-                // console.log(translationarray);
-                //initialize definition
-                let defi = "";
-                if (def){
-                  //if value from api search not undefined use the value
-                  defi = def;
-                }
-
-                //initialize example
-                let eg = "";
-                if (example){
-                  //if value from api search not undefined use the value
-                  eg = example;
-                }
-
-                //initialize synonym
-                let syn = "";
-                if (synonym){
-                  //if value from api search not undefined use the value
-                  syn = synonym;
-                }
-
-                //initialize not mean here
-                let notMeanHere = "";
-                if(antonyms){
-                  //if value from api search not undefined use the value
-                  notMeanHere = antonyms;
-                }
-
-                //initialise media
-                let Graphic = "";
-                let Movie = "";
-
-                //initailise languages
-                let Afrikaans = "";
-                let isiNdebele =  "";
-                let isiXhosa = "";
-                let isiZulu = "";
-                let Sepedi = "";
-                let Sesotho =  "";
-                let Setswana =  "";
-                let siSwati =  "";
-                let Tshivenda =  "";
-                let Xitsonga =  "";
-
-                if (translationarray[0] && translationarray[0].translation){
-                  //if the object at that index exists and the translation at the index exists then use it and set translation
-                  Afrikaans = translationarray[0].translation;
-                }
-                if (translationarray[6] && translationarray[6].translation){
-                  //if the object at that index exists and the translation at the index exists then use it and set translation
-                  isiNdebele =  translationarray[6].translation;
-                }
-                if (translationarray[1] && translationarray[1].translation){
-                  //if the object at that index exists and the translation at the index exists then use it and set translation
-                  isiXhosa = translationarray[1].translation;
-                }
-                if (translationarray[2] && translationarray[2].translation){
-                  //if the object at that index exists and the translation at the index exists then use it and set translation
-                  isiZulu = translationarray[2].translation;
-                }
-                if (translationarray[5] && translationarray[5].translation){
-                  //if the object at that index exists and the translation at the index exists then use it and set translation
-                  Sepedi =  translationarray[5].translation;
-                }
-                if (translationarray[3] && translationarray[3].translation){
-                  //if the object at that index exists and the translation at the index exists then use it and set translation
-                  Sesotho =  translationarray[3].translation;
-                }
-                if (translationarray[4] && translationarray[4].translation){
-                  //if the object at that index exists and the translation at the index exists then use it and set translation
-                  Setswana =  translationarray[4].translation;
-                }
-                if (translationarray[8] && translationarray[8].translation){
-                  //if the object at that index exists and the translation at the index exists then use it and set translation
-                  siSwati =  translationarray[8].translation;
-                }
-                if (translationarray[7] && translationarray[7].translation){
-                  //if the object at that index exists and the translation at the index exists then use it and set translation
-                  Tshivenda =  translationarray[7].translation;
-                }
-                if (translationarray[9] && translationarray[9].translation){
-                  //if the object at that index exists and the translation at the index exists then use it and set translation
-                  Xitsonga =  translationarray[9].translation;
-                }
-
-                
-                //initialise the reviews good and bad
-                let Bad = 0;
-                let Good = 0;
-
-                //see the values set
-                console.log(defi,eg,syn,notMeanHere,Graphic,Movie,Afrikaans,isiNdebele,
-                  isiXhosa,isiZulu,Sepedi,Sesotho,Setswana,siSwati,Tshivenda,Xitsonga,Bad,Good);
-                
-                //initialise the values going into firestore from the ones set above
-                const info = {
-                  Definition: defi,
-                  Example: eg, 
-                  Synonym: syn, 
-                  WhatWordDoesNotMeanHere: notMeanHere,
-                  Graphic: Graphic,
-                  Movie: Movie,
-                  Afrikaans: Afrikaans,
-                  isiNdebele: isiNdebele,
-                  isiXhosa: isiXhosa,
-                  isiZulu: isiZulu,
-                  Sepedi: Sepedi,
-                  Sesotho: Sesotho,
-                  Setswana: Setswana,
-                  siSwati: siSwati,
-                  Tshivenda: Tshivenda,
-                  Xitsonga: Xitsonga,
-                  Bad: Number(Bad),
-                  Good: Number(Good)
-                }
-
-
-                //try to set document
-                try{
-                  //set a new document called finalWord that will hold the details
-                  setDoc(doc(db, "words", finalWord),info);
-                  }
-                catch(Exception){
-                  //print error
-                  console.log(Exception);
-                }
-              }).catch(error => console.error(error)); //log error
-             
-          }).catch(error => console.error(error)); //log error
-           
-          // Empty the translations array after psrocessing
-          translationarray.length = 0;
-}
-
-                
-
-
-
-//delay the running time
-function delay(time){
-  //return what will only be returned after the time
-  return new Promise(resolve => setTimeout(resolve,time));
-}
-
+//initialize backClicked
+let badClicked = 0;
 //when thumbs down is clciked do this
 function incBad(){
-  //field going to change
-  const fieldChange = {Bad: increment(1)};
-  //update the document
-  updateDoc(doc(db, "words", finalWord),fieldChange);
-  
-  //make the icons hidden
-  goodIcon.style.visibility="hidden";
-  badIcon.style.visibility="hidden";
+  //increment badClicked
+  badClicked++;
+
+  //if good clicked, unclick it
+  if (goodClicked % 2 != 0){
+    //decrease goodClicked;
+    goodClicked--;
+    //if clicked for second time then remove border
+    //set the border when clicked
+    goodIcon.style.border = "none";
+    goodIcon.style.borderRadius = "0%";
+    //field going to change, decrease the rating
+    const fieldChange = {Good: increment(-1)};
+    //update the document
+    updateDoc(doc(db, "words", finalWord),fieldChange);
+  }
+  if (badClicked % 2 == 0){
+    //if clicked for second time then remove border
+    //set the border when clicked
+    badIcon.style.border = "none";
+    badIcon.style.borderRadius = "0%";
+    //field going to change, decrease the rating
+    const fieldChange ={Bad: increment(-1)};
+    //update the document
+    updateDoc(doc(db, "words", finalWord),fieldChange);
+  }else{
+    //set the border when clicked
+    badIcon.style.border = "1px solid red";
+    //make the border a circle
+    badIcon.style.borderRadius = "50%";
+    //field going to change, increase rating
+    const fieldChange = {Bad: increment(1)};
+    //update the document
+    updateDoc(doc(db, "words", finalWord),fieldChange);}
 }
 
+//initialize goodClicked
+let goodClicked=0;
 //when thumbs up is clciked do this
 function incGood(){
-  //field going to change
-  const fieldChange = {Good: increment(1)};
-  //update the document
-  updateDoc(doc(db, "words", finalWord),fieldChange);
-
-  //make the icons hidden
-  goodIcon.style.visibility="hidden";
-  badIcon.style.visibility="hidden";
+  //increment goodClicked
+  goodClicked++;
+  
+  //if bad clicked unclick it
+  if (badClicked % 2 != 0){
+    //decrease badClicked;
+    badClicked--;
+    //if clicked for second time then remove border
+    //set the border when clicked
+    badIcon.style.border = "none";
+    badIcon.style.borderRadius = "0%";
+    //field going to change, decrease the rating
+    const fieldChange ={Bad: increment(-1)};
+    //update the document
+    updateDoc(doc(db, "words", finalWord),fieldChange);
+  }
+  if (goodClicked % 2 == 0){
+    //if clicked for second time then remove border
+    //set the border when clicked
+    goodIcon.style.border = "none";
+    goodIcon.style.borderRadius = "0%";
+    //field going to change, decrease the rating
+    const fieldChange = {Good: increment(-1)};
+    //update the document
+    updateDoc(doc(db, "words", finalWord),fieldChange);
+  }else{
+    //set the border when clicked
+    goodIcon.style.border = "1px solid green";
+    //make the border a circle
+    goodIcon.style.borderRadius = "50%";
+    //field going to change, increase rating
+    const fieldChange = {Good: increment(1)};
+    //update the document
+    updateDoc(doc(db, "words", finalWord),fieldChange);
+  }
 }
 
 //Upon clicking the image icon this runs
 function showImage(){
+  if(pictureWord.style.visibility=='visible'){
+    //clear picture src
+    pictureWord.src="";
+    //hide the image
+    pictureWord.style.visibility='hidden';
+  }else{
+    //if no picture showing then this
+    //try doing this
+    //hide loader
+    loader.style.visibility="visible";
+    try{
+      //initialise reference from firestore
+      const ImageRef = wordDetails[0].Graphic;
+
+      //set the img's src to the image ref
+      pictureWord.src=ImageRef;
+
+      //show the image
+      pictureWord.style.visibility='visible';
+      //hide loader
+      loader.style.visibility="hidden";
+    }catch(Exception){
+      //log the error
+      console.log(Exception);
+      //hide loader
+      loader.style.visibility="hidden";
+    }
+  }
 }
 
 //when sound icon is clicked this will run
 function playSound(){
-  
+  //show loader
+  loader.style.visibility="visible";
   try{
     //initiate the speech synthesis utterance
     const utterance = new SpeechSynthesisUtterance(finalWord);
@@ -594,13 +796,16 @@ function playSound(){
 
     //speak
     speechSynthesis.speak(utterance);
+    //hide loader
+    loader.style.visibility="hidden";
     
   }catch(Exception){
     //if it does not work , log the error
      console.log(Exception);
+     //hide loader
+     loader.style.visibility="hidden";
   }
 }
-
 
 //when video icon is clicked this will run
 function playVideo(){
@@ -610,13 +815,14 @@ function playVideo(){
 function doClose(){
     //close the window on chrome
     window.close();
-
 }
 
-//on click listeners
-closeIcon.addEventListener('click',doClose);
-imageIcon.addEventListener('click',showImage);
-videoIcon.addEventListener('click',playVideo);
-soundIcon.addEventListener('click',playSound);
-goodIcon.addEventListener('click',incGood);
-badIcon.addEventListener('click',incBad);
+//sign Out by clearing the local storage where signedIn status is
+function signOut(){
+  //remove the data
+  localStorage.removeItem('signedIn');
+  localStorage.removeItem('email');
+  localStorage.removeItem('dateTime');
+  alert("You are signed out");
+}
+//END OF ON CLICK FUNCTIONS

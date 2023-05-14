@@ -218,7 +218,6 @@ if (/\s/.test(finalWord)){
 }
 //END OF WORKING WITH SELECTED WORD
 
-
 //BEGINNING OF FUNCTIONS CALLED IN PROCESS
 //Getting a word not present in the database
 function findDetailsaddDocument(){

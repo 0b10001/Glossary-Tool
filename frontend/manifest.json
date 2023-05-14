@@ -24,7 +24,8 @@
 
     "browser_action": {
         "default_popup": "dist/index1.html",
-        "default_title": "glossary tool"
+        "default_title": "glossary tool",
+        "default_icon":"popup_images/GTicon1.png"
     },
     "permissions": [
       "tabs",

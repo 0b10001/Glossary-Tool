@@ -1,0 +1,36 @@
+{
+    "manifest_version":2,
+  
+    "name": "Glossary Tool2",
+    "description": "This extension will define words on double click.",
+    "version": "1.0",
+  
+   
+    "content_scripts":[
+      {
+        "matches":[
+          "<all_urls>"
+        ],
+        "js": ["dist/contentg.bundle.js"]
+
+      }
+    ],
+    
+    "background":{
+        "scripts": ["dist/background.bundle.js"]
+
+    },
+    "persistent": false,
+
+    "browser_action": {
+        "default_popup": "dist/index1.html",
+        "default_title": "glossary tool",
+        "default_icon":"popup_images/GTicon1.png"
+    },
+    "permissions": [
+      "tabs",
+      "activeTab",
+      "storage"
+    ],
+    "content_security_policy": "script-src 'self' blob: filesystem: 'unsafe-eval'; object-src 'self'"
+  }

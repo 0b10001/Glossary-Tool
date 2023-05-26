@@ -5,7 +5,8 @@ module.exports = {
     contentg: './src/contentg.js',
     background: './src/background.js',
     main: './src/GT.js',
-    signin: './src/signin.js'
+    signin: './src/signin.js',
+    adminPage:'./src/adminPage.js' 
   },
   output: {
     filename:'[name].bundle.js',

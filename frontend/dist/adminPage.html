@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Admin Page</title>
+    <link rel="stylesheet" href="adminPageStyle.css" type="text/css"/>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+   
+</head>
+<body>
+    <header>
+        <div class="logo">Glossary Tool</div>
+        <div class="hamburger">
+            <div class ="line"></div>
+            <div class ="line"></div>
+            <div class ="line"></div>
+        </div>
+        <nav class = "nav-bar">
+            <ul class="tabs">
+                <li class="tab ">
+                    <a data-switcher data-tab="1">View collections</a>
+                </li>
+                <li class="tab is-active">
+                    <a data-switcher data-tab="2">Define a word</a>
+                </li>
+                <li class="tab">
+                    <a data-switcher data-tab="3">Register new user</a>
+                </li>
+                <li class="tab">
+                    <a data-switcher data-tab="4">Edit word details</a>
+                </li>
+
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section class="pages">
+            <div class="page" data-page="1">
+                <h2>View Collections</h2>
+                <div class="buttons" id="buttons">
+                    <input type="button" value="Show logged words" id="loggedWords" class="VC">
+                    <input type="button" value="Show all words" id="allWords" class="VC">
+                </div>
+                <p class="status" id="status"><strong>All words</strong></p>
+                <div class = "Table" id="Table">
+                    <table class = "Ranked" id="Ranked">
+                        <tr><th>Word</th><th>Number of searches</th></tr>
+                    </table>
+                    <table class = "Word" id="Word">
+                        <tr><th>Word</th></tr>
+                       
+                    </table>
+                    <table class="Detail" id="Detail">
+                        <tr><th>Details</th><th>Values</th></tr>
+                        
+                        <tr>
+                            <td class="D">Definition:</td>
+                            <td id="Definition"></td>
+                        </tr>
+                        <tr>
+                            <td class="D">Example Sentence:</td>
+                            <td id="egSen"></td>
+                        </tr>
+                        <tr>
+                            <td class="D">Similar meaning:</td>
+                            <td id="Similar"></td>
+                        </tr>
+                        <tr>
+                            <td class="D">Not mean here:</td>
+                            <td id="NotMean"></td>
+                        </tr>
+                        <tr>
+                            <td class="D">Graphic:</td>
+                            <td id="Graphic"></tr>
+                        <tr>
+                            <td class="D">Movie:</td>
+                            <td id="Movie"></td>
+                        </tr>
+                        <tr>
+                            <td class="D">Thumbs up:</td>
+                            <td id="numUp"></td>
+                        </tr>
+                        <tr>
+                            <td class="D">Thumbs down:</td>
+                            <td id="numDown"></td>
+                        </tr>
+                        <tr>
+                            <td class="D">Afrikaans:</td>
+                            <td id="Afrikaans"></td>
+                        </tr>
+                        <tr>
+                            <td class="D">Sepedi:</td>
+                            <td id="Sepedi"></td>
+                        </tr>
+                        <tr>
+                            <td class="D">Sesotho:</td>
+                            <td id="Sesotho"></td>
+                        </tr>
+                        <tr>
+                            <td class="D">Setswana:</td>
+                            <td id="Setswana"></td>
+                        </tr>
+                        <tr>
+                            <td class="D">isiZulu:</td>
+                            <td id="isiZulu"></td>
+                        </tr>
+                        <tr>
+                            <td class="D">isiNdebele:</td>
+                            <td id="isiNdebele"></td>
+                        </tr>
+                        <tr>
+                            <td class="D">isiXhosa:</td>
+                            <td id="isiXhosa"></td>
+                        </tr>
+                        <tr>
+                            <td class="D">Xitsonga:</td>
+                            <td id="Xitsonga"></td>
+                        </tr>
+                        <tr>
+                            <td class="D">siSwati:</td>
+                            <td id="siSwati"></td>
+                        </tr>
+                        <tr>
+                            <td class="D">Tshivenda:</td>
+                            <td id="Tshivenda"></td>
+                        </tr>
+                    </table>
+                
+                </div>
+                <div class="loader"></div>
+            </div>
+            <div class="page is-active"data-page="2">
+                <h2>Define a word</h2>
+                <p></p>
+                <div class="buttons">
+                    <input type="button" value="Edit word"id="EditOpt" class="VC">
+                    <input type="button" value="Define word"id="DefineOpt" class="VC">
+                </div>
+                <div class="GB" id="GB">
+                    <span>Words with more thumbs up than thumbs up</span>
+                    <select id="badWords" class="badWords">
+                        <option value="">a</option>
+                    </select>
+                </div>
+                <div class="inputboxes"id="inputboxes">
+                    <div class="in">
+                        <span><strong>Word</strong></span>
+                        <input type="text" required="required" id="InWord" class="short">
+                        <span id="errWord" class = "err"></span>
+                    </div>
+
+                    <div class="in">
+                        <span><strong>Definition</strong></span>
+                        <input type="text"required="required" id="InDef" class="long">
+                        <span id="errDef" class = "err"></span>
+                    </div>
+
+                    <div class="in">
+                        <span><strong>Example sentence</strong></span>
+                        <input type="text"required="required" id="InEg" class="long">
+                        <span id="errEg" class = "err"></span>
+                    </div>
+
+                    <div class="in">
+                        <span><strong>Words with similar meaning</strong></span>
+                        <input type="text" id="InSim" class="long">
+                        <span id="errSim" class = "err"></span>
+                    </div>
+
+                    <div class="in">
+                        <span><strong>What word does not mean here</strong></span>
+                        <input type="text" id="InNotMean" class="long">
+                        <span id="errNotMean" class = "err"></span>
+                    </div>
+
+                    <div class="in">
+                        <span><strong>Graphic URL</strong></span>
+                        <input type="text" id="InGraphic" class="long">
+                        <span id="errGraphic" class = "err"></span>
+                    </div>
+
+                    <div class="in">
+                        <span><strong>Movie URL</strong></span>
+                        <input type="text" id="InMovie" class="long">
+                        <span id="errMovie" class = "err"></span>
+                    </div>
+
+                    <div class="in">
+                        <span><strong>Afrikaans</strong></span>
+                        <input type="text" id="InAfrikaans" class="short">
+                        <span id="errAfrikaans" class = "err"></span>
+                    </div>
+
+                    <div class="in">
+                        <span><strong>Setswana</strong></span>
+                        <input type="text" id="InSetswana" class="short">
+                        <span id="errSetswana" class = "err"></span>
+                    </div>
+
+                    <div class="in">
+                        <span><strong>Sepedi</strong></span>
+                        <input type="text"  id="InSepedi" class="short">
+                        <span id="errSepedi" class = "err"></span>
+                    </div>
+
+                    <div class="in">
+                        <span><strong>Sesotho</strong></span>
+                        <input type="text" id="InSesotho" class="short">
+                        <span id="errSesotho" class = "err"></span>
+                    </div>
+
+                    <div class="in">
+                        <span><strong>siSwati</strong></span>
+                        <input type="text" id="InsiSwati" class="short">
+                        <span id="errsiSwati" class = "err"></span>
+                    </div>
+
+
+                    <div class="in">
+                        <span><strong>isiXhosa</strong></span>
+                        <input type="text" id="InisiXhosa" class="short">
+                        <span id="errisiXhosa" class = "err"></span>
+                    </div>
+
+                    <div class="in">
+                        <span><strong>isiNdebele</strong></span>
+                        <input type="text" id="InisiNdebele" class="short">
+                        <span id="errisiNdebele" class = "err"></span>
+                    </div>
+
+                    <div class="in">
+                        <span><strong>isiZulu</strong></span>
+                        <input type="text" id="InisiZulu" class="short">
+                        <span id="errisiZulu" class = "err"></span>
+                    </div>
+
+                    <div class="in">
+                        <span><strong>Tshivenda</strong></span>
+                        <input type="text"  id="InTshivenda" class="short">
+                        <span id="errTshivenda" class = "err"></span>
+                    </div>
+
+                    <div class="in">
+                        <span><strong>Xitsonga</strong></span>
+                        <input type="text" id="InXitsonga" class="short">
+                        <span id="errXitsonga" class ="err"></span>
+                    </div>
+                    <div class="final">
+                        <input type="button" value="Cancel"id="Cancel" class="VC">
+                        <input type="button" value="Submit"id="Submit" class="VC">
+                        <input type="button" value="Update"id="Update" class="VC">
+                        <span id="errO" class = "err"></span>
+                    </div>
+                </div>
+                <div class ="LoaderDefine"></div>
+            </div>
+            <div class="page"data-page="3">
+                <h2>Register new user</h2>
+                <p>Welcome to Register new user</p>
+                <div>
+                    <div class="in">
+                        <span><strong>Email</strong></span>
+                        <input type="email"  id="InEmail" class="short">
+                        <span id="errEmail" class = "err"></span>
+                    </div>
+
+                    <div class="in">
+                        <span><strong>Password</strong></span>
+                        <input type="text" id="InPass" class="short">
+                        <span id="errPass" class ="err"></span>
+                    </div>
+
+                    <div class="in">
+                        <span><strong>Verify Password</strong></span>
+                        <input type="text" id="InVPass" class="short">
+                        <span id="errVPass" class ="err"></span>
+                    </div>
+                    <div class="final">
+                        <input type="button" value="Cancel"id="CancelN" class="VC">
+                        <input type="button" value="Submit"id="SubmitN" class="VC">
+                        <span id="errAuth" class = "err"></span>
+                    </div>
+                </div>
+                <div class ="LoaderN">
+                </div>
+            </div>
+            <div class="page" data-page="4">
+                <h2>Edit word details</h2>
+                <p>Welcome to Edit word details</p>
+            </div>
+        </section>
+    </main>
+
+    
+</body>
+<script src="/dist/adminPage.bundle.js"></script>
+</html>

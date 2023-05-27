@@ -522,6 +522,9 @@ function defineWordOpt(){
 
     //clear errors
     ClearErrors();
+    
+    //clear boxes
+    ClearBoxes();
 
     //hide them
     defineWordbtn.style.display="none";
@@ -877,6 +880,9 @@ function editWordOpt(){
 
     //clear errors
     ClearErrors();
+    
+    //clear boxes
+    ClearBoxes();
 
     //hide certian view
     editWordbtn.style.display = "none";

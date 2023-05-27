@@ -1,9 +1,9 @@
 {
     "manifest_version":2,
   
-    "name": "Glossary Tool2",
+    "name": "The Glossary Tool",
     "description": "This extension will define words on double click.",
-    "version": "1.0",
+    "version": "4.0",
   
    
     "content_scripts":[

@@ -11,6 +11,20 @@ if(localStorage.length>0){
   email = localStorage.getItem('email');
   dateTime = localStorage.getItem('dateTime');
 }
+//to adminpage
+document.getElementById('adminPage').style.display="none";
+//set admin
+//initialize admin status
+let adminLogged = false;
+//admin signed in
+if (email == "kganyago@lo.com"){
+  //change status
+  adminLogged = true;
+  //make link visible
+  document.getElementById('adminPage').style.display="block";
+}
+
+
 //END OF LOCAL STORAGE CHECK
 
 
@@ -217,6 +231,7 @@ if (/\s/.test(finalWord)){
     }
 }
 //END OF WORKING WITH SELECTED WORD
+
 
 //BEGINNING OF FUNCTIONS CALLED IN PROCESS
 //Getting a word not present in the database

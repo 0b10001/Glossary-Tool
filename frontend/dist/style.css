@@ -1,22 +1,51 @@
-body{
-    min-width: 650px;
-    min-height: 270px;
 
-}
 .popUp{
     border: 1px solid black;
-    min-width: 650px;
-    min-height: 270px;
+    width: 650px;
+    min-height: 40px;
     background: #e9e0e0;
     border-radius: 8px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
     border-color: transparent transparent transparent transparent;
 
     
 }
+.loader{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.75s, visibility 0.75s;
+
+
+}
+.loader-hidden{
+    opacity: 0;
+    visibility: hidden;
+}
+
+.loader::after{
+    content: "";
+    width: 30px;
+    height: 30px;
+    border: 6px solid #dddddd;
+    border-top-color: #7449f5;
+    border-radius: 50%;
+    animation: loading 0.75s ease infinite;
+}
+
+@keyframes loading{
+    from{
+        transform: rotate(0turn);
+    }
+    to{
+        transform: rotate(1turn);
+    }
+}
+
 .parent-one{
     display: flex;
     /*border: 1px solid green;*/
@@ -57,16 +86,24 @@ p{
 .PictureOfWord{
     float: left;
     max-width: 30%;
-    
+    max-height: 130px;
     /*border: 4px solid red;*/
     margin:5px;
     background-size: cover;
     
 }
+.wordPic{
+    width: 100%;
+    max-height: 100%;
+}
+
 .definitions{
     float: right;
     text-align: left;
     width: 70%;
+    overflow-y: hidden;
+    word-wrap: break-word;
+    
     /*border: 4px solid red;*/
     margin: 5px;
 }
@@ -93,10 +130,35 @@ p{
 }
 
 
-.picture img {
-    max-width: 100%;
-    max-height: 100%;
-    display: 100%;
-    overflow: hidden;
-    
+
+ .linkIn{
+    font-size: 18px;
+    margin-right: 10px;
+    color: blue;
  }
+ .linkOut{
+    font-size: 18px;
+    margin-right: 10px;
+    color: red;
+ }
+ .linkAdmin{
+    font-size: 18px;
+    margin-right: 10px;
+    color: green;
+ }
+
+.signinPage{
+    width: 650px;
+    text-align: right;
+    justify-content: right;
+}
+.signout{
+    width: 650px;
+    text-align: right;
+    justify-content: right;
+}
+.adminPage{
+    width: 650px;
+    text-align: right;
+    justify-content: right;
+}

@@ -18,25 +18,21 @@
         </div>
         <nav class = "nav-bar">
             <ul class="tabs">
-                <li class="tab ">
+                <li class="tab is-active">
                     <a data-switcher data-tab="1">View collections</a>
                 </li>
-                <li class="tab is-active">
+                <li class="tab">
                     <a data-switcher data-tab="2">Define a word</a>
                 </li>
                 <li class="tab">
                     <a data-switcher data-tab="3">Register new user</a>
                 </li>
-                <li class="tab">
-                    <a data-switcher data-tab="4">Edit word details</a>
-                </li>
-
             </ul>
         </nav>
     </header>
     <main>
         <section class="pages">
-            <div class="page" data-page="1">
+            <div class="page is-active" data-page="1">
                 <h2>View Collections</h2>
                 <div class="buttons" id="buttons">
                     <input type="button" value="Show logged words" id="loggedWords" class="VC">
@@ -130,18 +126,21 @@
                 </div>
                 <div class="loader"></div>
             </div>
-            <div class="page is-active"data-page="2">
-                <h2>Define a word</h2>
+            <div class="page"data-page="2">
+                <h2 id="DW">Define a word</h2>
                 <p></p>
                 <div class="buttons">
                     <input type="button" value="Edit word"id="EditOpt" class="VC">
                     <input type="button" value="Define word"id="DefineOpt" class="VC">
                 </div>
                 <div class="GB" id="GB">
-                    <span>Words with more thumbs up than thumbs up</span>
+                    <span>Words with more thumbs down than thumbs up.</span>
+                    <span>Ordered by highest difference(first) between thumbs up and down.</span>
                     <select id="badWords" class="badWords">
-                        <option value="">a</option>
+                        <option value=""></option>
                     </select>
+                    <input type="search" placeholder="Search..." id="SW"class="VC"></input>
+                    <input type="button" value="Search"id="Search" class="VC"></input>                    <span id="errSearch" class = "err"></span>
                 </div>
                 <div class="inputboxes"id="inputboxes">
                     <div class="in">
@@ -247,9 +246,9 @@
                         <span id="errXitsonga" class ="err"></span>
                     </div>
                     <div class="final">
-                        <input type="button" value="Cancel"id="Cancel" class="VC">
                         <input type="button" value="Submit"id="Submit" class="VC">
                         <input type="button" value="Update"id="Update" class="VC">
+                        <input type="button" value="Cancel"id="Cancel" class="VC">
                         <span id="errO" class = "err"></span>
                     </div>
                 </div>
@@ -257,7 +256,6 @@
             </div>
             <div class="page"data-page="3">
                 <h2>Register new user</h2>
-                <p>Welcome to Register new user</p>
                 <div>
                     <div class="in">
                         <span><strong>Email</strong></span>
@@ -267,27 +265,23 @@
 
                     <div class="in">
                         <span><strong>Password</strong></span>
-                        <input type="text" id="InPass" class="short">
+                        <input type="password" id="InPass" class="short">
                         <span id="errPass" class ="err"></span>
                     </div>
 
                     <div class="in">
                         <span><strong>Verify Password</strong></span>
-                        <input type="text" id="InVPass" class="short">
+                        <input type="password" id="InVPass" class="short">
                         <span id="errVPass" class ="err"></span>
                     </div>
                     <div class="final">
-                        <input type="button" value="Cancel"id="CancelN" class="VC">
                         <input type="button" value="Submit"id="SubmitN" class="VC">
+                        <input type="button" value="Cancel"id="CancelN" class="VC">
                         <span id="errAuth" class = "err"></span>
                     </div>
                 </div>
                 <div class ="LoaderN">
                 </div>
-            </div>
-            <div class="page" data-page="4">
-                <h2>Edit word details</h2>
-                <p>Welcome to Edit word details</p>
             </div>
         </section>
     </main>

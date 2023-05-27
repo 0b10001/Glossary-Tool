@@ -4,6 +4,7 @@
     text-decoration: none;
     font-family:"Google Sans Regular";
     box-sizing: border-box;
+    font-size: 20px;
 }
 body{
     background: white;
@@ -108,7 +109,7 @@ header{
         overflow: hidden;
     }
     .nav-bar.active{
-        height: 250px;
+        height: 200px;
     }
     .nav-bar ul{
         display: block;
@@ -154,7 +155,7 @@ header{
 
 table{
     width: 100%;
-    height: 600px;
+    max-height: 600px;
     display: flex;
     background: white;
     border-radius: 8px;
@@ -301,19 +302,20 @@ tr:nth-of-type(2n){
 }
 
 .final input{
-    
+    display: inline;
     background-color: #e9e0e0;
     font-weight: bold;
 }
-.final Cancel{
+.final .Cancel{
     color: grey;
 }
+
 
 .GB span{
     display: block;
 }
 .GB select{
-    width: 30%;
+    width: 50%;
     color: blue;
     background: white;
     font-size: 21px;
@@ -333,7 +335,7 @@ tr:nth-of-type(2n){
 
 .GB select option:hover{
     color: white;
-    background: blue;
+    background: rgb(114, 114, 233);
     cursor: pointer;
 }
 
@@ -372,6 +374,12 @@ tr:nth-of-type(2n){
     to{
         transform: rotate(1turn);
     }
+}
+.tag{
+    cursor: pointer;
+}
+.tag.active{
+    color: red;
 }
 
 .err{

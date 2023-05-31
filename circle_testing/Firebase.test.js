@@ -1,3 +1,4 @@
+import 'cross-fetch/polyfill';
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { getFirestore, collection, addDoc ,getDocs,doc,setDoc,getDoc} from 'firebase/firestore';

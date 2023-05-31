@@ -89,43 +89,45 @@ test('Sign-in verification', async () => {
     ]);
   }, 10000);
   
-  test('API call - Fetch translations and store in database', async () => {
-    const testWord = 'Better';
-  
-    // Initialize the requests list
-    const requests = [];
-  
-    // Initialize the language pairs
-    const languagePairs = [
-      { code: 'af', name: 'Afrikaans' },
-      { code: 'xh', name: 'Xhosa' },
-      { code: 'zu', name: 'Zulu' },
-      { code: 'st', name: 'Sotho' },
-      { code: 'tn', name: 'Tswana' },
-      { code: 'nso', name: 'Sepedi' },
-      { code: 'nr', name: 'Ndebele' },
-      { code: 'ts', name: 'Venda' },
-      { code: 've', name: 'Swati' },
-      { code: 'ts', name: 'Tsonga' }
-    ];
-  
-    // Make requests to fetch translations for each language pair
-    for (const pair of languagePairs) {
-      const myMemoryUrl = `https://api.mymemory.translated.net/get?q=${testWord }&langpair=en|${pair.code}`;
-      requests.push(fetch(myMemoryUrl));
-    }
-  
-    // Wait until all requests are completed
-    const responses = await Promise.all(requests);
-    const data = await Promise.all(responses.map(resp => resp.json()));
-  
-    // Initialize translations
-    let translations = '';
-  
-    // Initialize translation array
-    const translationArray = [];
-  
-    // Process the data and store translations
+import axios from 'axios';
+import { getFirestore, collection, doc, setDoc, getDocs } from 'firebase/firestore';
+
+test('API call - Fetch translations and store in database', async () => {
+  const testWord = 'Better';
+
+  // Initialize the requests list
+  const requests = [];
+
+  // Initialize the language pairs
+  const languagePairs = [
+    { code: 'af', name: 'Afrikaans' },
+    { code: 'xh', name: 'Xhosa' },
+    { code: 'zu', name: 'Zulu' },
+    { code: 'st', name: 'Sotho' },
+    { code: 'tn', name: 'Tswana' },
+    { code: 'nso', name: 'Sepedi' },
+    { code: 'nr', name: 'Ndebele' },
+    { code: 'ts', name: 'Venda' },
+    { code: 've', name: 'Swati' },
+    { code: 'ts', name: 'Tsonga' }
+  ];
+
+  // Make requests to fetch translations for each language pair
+  for (const pair of languagePairs) {
+    const myMemoryUrl = `https://api.mymemory.translated.net/get?q=${testWord}&langpair=en|${pair.code}`;
+    requests.push(axios.get(myMemoryUrl));
+  }
+
+  // Wait until all requests are completed
+  const responses = await Promise.all(requests);
+  const data = responses.map(resp => resp.data);
+
+  // Initialize translations
+  let translations = '';
+
+  // Initialize translation array
+  const translationArray = [];
+
   // Process the data and store translations
   for (let i = 0; i < data.length; i++) {
     const translation = data[i].responseData.translatedText;
@@ -137,24 +139,25 @@ test('Sign-in verification', async () => {
     translations += `${languageName}: ${formattedTranslation}<br>`;
     translationArray.push({ language: languageName, translation: formattedTranslation });
   }
-  
-    // Access the Firestore instance
-    const firestore = getFirestore();
-  
-    // Set the custom document ID as the searched word
-    const testDocumentRef = doc(firestore, 'word_tester', testWord );
-  
-    // Add the translations to the document
-    await setDoc(testDocumentRef, { translations: translationArray }, { merge: true });
-  
-    // Retrieve the added document from the collection
-    const querySnapshot = await getDocs(collection(firestore, 'word_tester'));
-    const documents = querySnapshot.docs.map(doc => doc.data());
-  
-    // Assert that the translations were added successfully
-    expect(documents).toContainEqual(expect.objectContaining({ translations: translationArray }));
 
-  }, 20000);
+  // Access the Firestore instance
+  const firestore = getFirestore();
+
+  // Set the custom document ID as the searched word
+  const testDocumentRef = doc(firestore, 'word_tester', testWord);
+
+  // Add the translations to the document
+  await setDoc(testDocumentRef, { translations: translationArray }, { merge: true });
+
+  // Retrieve the added document from the collection
+  const querySnapshot = await getDocs(collection(firestore, 'word_tester'));
+  const documents = querySnapshot.docs.map(doc => doc.data());
+
+  // Assert that the translations were added successfully
+  expect(documents).toContainEqual(expect.objectContaining({ translations: translationArray }));
+
+}, 20000);
+
   
 
  

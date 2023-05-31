@@ -15,7 +15,8 @@
     "jsdom": "^22.0.0",
      "@babel/core": "^7.15.0",
     "@babel/preset-env": "^7.15.0",
-    "babel-jest": "^27.0.6"
+    "babel-jest": "^27.0.6",
+    "firebase": "^9.0.0"
   }
 }
 

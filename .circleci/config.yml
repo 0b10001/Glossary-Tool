@@ -15,7 +15,7 @@ jobs:
           command: yarn install
       - run:
           name: Run tests
-          command: yarn test --coverage --experimental-modules
+          command: yarn test --coverage
       - run:
           name: Upload coverage report
           command: |

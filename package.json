@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test":"jest --runInBand && babel-node Firebase.test.js"
-    
+    "test": "jest"
   },
   "author": "",
   "license": "ISC",

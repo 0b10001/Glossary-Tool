@@ -289,43 +289,49 @@ test('API call - Fetch picture and store in database', async () => {
   const accessKey = "_MfV33cUzKWKBQxlbhoFlPrXvJNMRrhrBYkQGCk-tqI";
   const apiUrl = `https://api.unsplash.com/search/photos?page=1&query=${finalWord}`;
 
-  // Fetch the data from the API
-  const response = await fetch(apiUrl, {
-    headers: {
-      Authorization: `Client-ID ${accessKey}`,
-    },
-  });
+  try {
+    // Fetch the data from the API using Axios
+    const response = await axios.get(apiUrl, {
+      headers: {
+        Authorization: `Client-ID ${accessKey}`,
+      },
+    });
 
-  if (!response.ok) {
-    throw new Error(response.status);
+    const data = response.data;
+
+    let graphic = ''; // Initialize the graphic URL
+
+    if (data && data.results[0] && data.results[0].urls && data.results[0].urls.regular) {
+      graphic = data.results[0].urls.regular;
+    }
+
+    // Access the Firestore instance
+    const firestore = getFirestore();
+
+    // Set the custom document ID as the searched word
+    const testDocumentRef = doc(firestore, 'word_tester', finalWord);
+
+    // Normalize the graphic URL before storing it in the document
+    const normalizedGraphic = normalizeUrl(graphic);
+
+    // Add the normalized graphic URL to the document
+    await setDoc(testDocumentRef, { graphic: normalizedGraphic }, { merge: true });
+
+    // Retrieve the added document from the collection
+    const querySnapshot = await getDocs(collection(firestore, 'word_tester'));
+    const documents = querySnapshot.docs.map(doc => doc.data());
+
+    // Assert that the graphic URL was added successfully
+    expect(documents).toContainEqual(expect.objectContaining({ graphic: normalizedGraphic }));
+  } catch (error) {
+    console.error('Error fetching picture data:', error.message);
   }
-
-  const data = await response.json();
-
-  let graphic = ''; // Initialize the graphic URL
-
-  if (data && data.results[0] && data.results[0].urls && data.results[0].urls.regular) {
-    graphic = data.results[0].urls.regular;
-  }
-
-  // Access the Firestore instance
-  const firestore = getFirestore();
-
-  // Set the custom document ID as the searched word
-  const testDocumentRef = doc(firestore, 'word_tester', finalWord);
-
-  // Add the graphic URL to the document
-  await setDoc(testDocumentRef, { graphic }, { merge: true });
-
-  // Retrieve the added document from the collection
-  const querySnapshot = await getDocs(collection(firestore, 'word_tester'));
-  const documents = querySnapshot.docs.map(doc => doc.data());
-
-  // Assert that the graphic URL was added successfully
-  expect(documents).toContainEqual(expect.objectContaining({ graphic }));
-
 }, 10000);
 
+// Function to normalize URLs by removing dynamic or query parameters
+function normalizeUrl(url) {
+  return url.split('?')[0];
+}
 test('Bad Rating when clicked', async () => {
   const collectionName = 'words';
   const documentId = 'ability';

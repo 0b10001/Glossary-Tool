@@ -266,7 +266,6 @@ test('API call - Fetch picture and compare URL', async () => {
 
     // Expected picture URL
     const expectedUrl = 'https://images.unsplash.com/photo-1524419986249-348e8fa6ad4a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0Mzk1MTN8MHwxfHNlYXJjaHwxfHxleGFtcGxlfGVufDB8fHx8MTY4NTU0NjYyN3ww&ixlib=rb-4.0.3&q=80&w=1080';
-
     // Assert that the fetched picture URL matches the expected URL
     expect(graphic).toEqual(expectedUrl);
   } catch (error) {

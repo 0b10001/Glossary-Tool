@@ -15,7 +15,7 @@ jobs:
           command: yarn install
       - run:
           name: Run tests
-          command: yarn test --coverage
+          command: yarn test --coverage --experimental-modules
       - run:
           name: Upload coverage report
           command: |
@@ -29,8 +29,6 @@ workflows:
       - node/test:
           version: '16.10'
           pkg-manager: yarn
-          parameters:
-            type: node
       - build:
           requires:
             - node/test

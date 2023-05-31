@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --transform=babel-jest"
+    "jest --runInBand && babel-node script.test.js"
     
   },
   "author": "",

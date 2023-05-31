@@ -249,18 +249,14 @@ test('API call - Fetch picture and compare URL', async () => {
   const apiUrl = `https://api.unsplash.com/search/photos?page=1&query=${finalWord}`;
 
   try {
-    // Fetch the data from the API
-    const response = await fetch(apiUrl, {
+    // Fetch the data from the API using axios
+    const response = await axios.get(apiUrl, {
       headers: {
         Authorization: `Client-ID ${accessKey}`,
       },
     });
 
-    if (!response.ok) {
-      throw new Error(response.status);
-    }
-
-    const data = await response.json();
+    const data = response.data;
 
     let graphic = ''; // Initialize the graphic URL
 

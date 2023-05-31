@@ -328,10 +328,6 @@ test('API call - Fetch picture and store in database', async () => {
   }
 }, 10000);
 
-// Function to normalize URLs by removing dynamic or query parameters
-function normalizeUrl(url) {
-  return url.split('?')[0];
-}
 test('Bad Rating when clicked', async () => {
   const collectionName = 'words';
   const documentId = 'ability';

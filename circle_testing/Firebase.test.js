@@ -89,8 +89,6 @@ test('Sign-in verification', async () => {
     ]);
   }, 10000);
   
-import axios from 'axios';
-import { getFirestore, collection, doc, setDoc, getDocs } from 'firebase/firestore';
 
 test('API call - Fetch translations and store in database', async () => {
   const testWord = 'Better';

@@ -62,15 +62,30 @@ signInForm.addEventListener('submit', (e) => {
     //set the user's credentials
     const user = userCredential.user;
 
+    //set data in globabl storage
+    // Define the data object to be stored
+    var data = {
+      signedIn: signedIn,
+      email: email
+      // Add more key-value pairs as needed
+    };
+
+    // Set the data in synchronized storage
+    chrome.storage.sync.set(data, function() {
+      console.log('Data set in synchronized storage:', data);
+    });
+
     //set the data in the local storage
     localStorage.setItem('signedIn',signedIn);
     localStorage.setItem('email',email);
     localStorage.setItem('dateTime',dateTime);
 
     //move to definition html3
-    window.location.href = "/dist/index1.html";
+    window.location.href = "/dist/GlossaryTool.html";
 
-    feedback.innerHTML="Logged in";
+    //show signed in
+    feedback.innerHTML="Signed in";
+    //color feedback
     feedback.style.color = "green";
     
     
@@ -96,6 +111,7 @@ signInForm.addEventListener('submit', (e) => {
         console.log(errorCode, errorMessage);
         feedback.innerHTML = "Non-password nor user error encountered";
         //hide loader
+        
         loader.style.visibility = "hidden";
 
       }

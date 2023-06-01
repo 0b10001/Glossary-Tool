@@ -10,11 +10,6 @@
     
 }
 .loader{
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -131,33 +126,8 @@ p{
 
 
 
- .linkIn{
-    font-size: 18px;
-    margin-right: 10px;
-    color: blue;
- }
- .linkOut{
-    font-size: 18px;
-    margin-right: 10px;
-    color: red;
- }
- .linkAdmin{
-    font-size: 18px;
-    margin-right: 10px;
-    color: green;
- }
 
-.signinPage{
-    width: 650px;
-    text-align: right;
-    justify-content: right;
-}
 .signout{
-    width: 650px;
-    text-align: right;
-    justify-content: right;
-}
-.adminPage{
     width: 650px;
     text-align: right;
     justify-content: right;

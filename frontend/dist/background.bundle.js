@@ -15,7 +15,7 @@
   \***************************/
 /***/ (() => {
 
-eval("//Notification of the backgorund running\r\nconsole.log('background running');\r\n\r\n//Listen for a message from the content.js and adding an eventlistener to the message\r\nchrome.runtime.onMessage.addListener(receiver);\r\n\r\n//Word in the background\r\nwindow.word = \"Glossary Tool\";\r\n\r\n//when message is received do this\r\nfunction receiver(request, sender, sendResponse){\r\n    //show what we are receiving\r\n    console.log(request);\r\n\r\n    //Set the new background word to be the receieved word\r\n    window.word = request.text;\r\n\r\n}\n\n//# sourceURL=webpack://try/./src/background.js?");
+eval("//on recwiving message do this\r\nchrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {\r\n    if (request.action === 'retrieveData') {\r\n      if (chrome.storage.local.length>0){\r\n        console.log(\"ooo\")\r\n      }\r\n      // Retrieve the data from local storage\r\n      chrome.storage.sync.get(['signedIn','email'], function(result) {\r\n        //set data to be sent back\r\n        const data = {\r\n          //set data\r\n          signedIn: result.signedIn,\r\n          email: result.email\r\n        };\r\n        // Send the retrieved data back to the content script\r\n        sendResponse({ data: data });\r\n        console.log(data);\r\n      });\r\n  \r\n      // Return true to indicate that the response will be sent asynchronously\r\n      return true;\r\n    }\r\n  });\r\n  \n\n//# sourceURL=webpack://try/./src/background.js?");
 
 /***/ })
 

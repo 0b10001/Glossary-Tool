@@ -3,9 +3,9 @@ const path = require('path');
 module.exports = {
   entry: {
     contentg: './src/contentg.js',
-    background: './src/background.js',
     main: './src/GT.js',
     signin: './src/signin.js',
+    background: './src/background.js',
     adminPage:'./src/adminPage.js' 
   },
   output: {

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        *{
+            background: #e9e0e0;
+        }
+        .main{
+            width: 330px;
+            color: blue;
+            border: 1px solid #000000;
+            background: #e9e0e0;
+            border-radius: 8px;
+            border-color: transparent transparent transparent transparent;
+        }
+        .linkIn{
+            font-size: 18px;
+            margin-right: 10px;
+            color: blue;
+        }
+        .signinPage{
+            text-align: right;
+            justify-content: right;
+        }
+        .linkOut{
+            font-size: 18px;
+            margin-right: 10px;
+            color: red;
+        }
+        .linkAdmin{
+            font-size: 18px;
+            margin-right: 10px;
+            color: green;
+        }
+
+
+        .signout{
+            text-align: right;
+            justify-content: right;
+        }
+        .adminPage{
+            text-align: right;
+            justify-content: right;
+        }
+    </style>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Glossary Tool</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+</head>
+
+
+<body>
+    <div class="main">
+        <h2>The Glossary Tool</h2>
+        <p>This extension allows you to double click on a word and details about the word will popup.</p>
+        <div id = "signinPage" class="signinPage">
+            <a id="sI" href="/dist/Signin.html" class="linkIn"><strong>Sign in</strong></a>
+        </div>
+        <div id = "adminPage" class="adminPage">
+            <a id="aP" href="/dist/adminPage.html" target="_blank"class="linkAdmin"><strong>Admin Page ></strong></a>
+        </div>
+        <div id = "signout" class="signout">
+            <p id ="sO">Signed in, searched words are being logged <a href="" class="linkOut"><strong>Sign out</strong></a></p>
+        </div>
+    </div>
+    
+</body>
+<script src='/src/initPopup.js'></script>
+
+</html>

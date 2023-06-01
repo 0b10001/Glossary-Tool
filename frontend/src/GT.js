@@ -1,88 +1,17 @@
-//BEGINNING OF LOCAL STORAGE CHECK (GET STATUS FOR USER)
+//CHECK SIGNED IN
+//hide status
+document.getElementById('signout').style.display = "none";
 //initialize signedin,email, and dateTime
 let signedIn = false;
 let email = "";
 let dateTime;
 
-//if there is somethin in the local Storage then
-if(localStorage.length>0){
-  //set signedin,email, and dateTime
-  signedIn = localStorage.getItem('signedIn');
-  email = localStorage.getItem('email');
-  dateTime = localStorage.getItem('dateTime');
+//email not nothing
+if(document.getElementById('iieM').innerHTML != ""){
+  //set the values from html
+  signedIn = document.getElementById('iisI').innerHTML;
+  email = document.getElementById('iieM').innerHTML;
 }
-//to adminpage
-document.getElementById('adminPage').style.display="none";
-//set admin
-//initialize admin status
-let adminLogged = false;
-//admin signed in
-if (email == "kganyago@lo.com"){
-  //change status
-  adminLogged = true;
-  //make link visible
-  document.getElementById('adminPage').style.display="block";
-}
-
-
-//END OF LOCAL STORAGE CHECK
-
-
-//BEGINNING OF THE VIEW (COMPONENTS ON THE HTML)
-//fetching components from the html file by id
-const headerWord = document.getElementById('headerWord');
-const definition = document.getElementById('definition');
-const egSentence = document.getElementById('egSentence');
-const simWords = document.getElementById('simWords');
-const notMean = document.getElementById('notMean');
-const language = document.getElementById("language");
-const translation = document.getElementById('translation');
-const pictureWord = document.getElementById('wordPic');
-const soundIcon = document.getElementById('sound');
-const videoIcon= document.getElementById('video');
-const imageIcon = document.getElementById('image');
-const closeIcon = document.getElementById('close');
-const goodIcon = document.getElementById('Good');
-const badIcon = document.getElementById('Bad');
-const loader = document.querySelector(".loader");
-const toSignIn = document.getElementById("signinPage");
-const toSignOut = document.getElementById("signout");
-
-//hide signOut and signIn
-toSignOut.style.display="none";
-toSignIn.style.display = "none";
-
-//hide the word picture at first
-pictureWord.style.visibility='hidden';
-
-//hide the video at first
-videoIcon.style.visibility='hidden';
-//END OF THE VIEW (COMPONENTS ON THE HTML)
-
-
-//BEGINNING OF WORKING WITH THE SELECTED WORD HERE
-//Going into the background page where the word is
-let bgpage = chrome.extension.getBackgroundPage();
-
-//initialising our word to be the word from the background page
-let word = bgpage.word;
-
-//removing spaces from the beginning and end of the word
-let finalWord=word.trim();
-
-//making the word lowercase since our words in the wordlist are all lowercase
-finalWord=finalWord.toLowerCase();
-
-//if there is no word then window in Chrome must stop running
-if (word==null){
-    window.stop();
-}
-//initialize wordFound
-let wordFound = false;
-
-//initialize the array that will store the word's details once its found
-let wordDetails = []
-
 
 //BEGINNING OF WORKING WITH DATABASE CONNECTION
 //importing firebase
@@ -93,6 +22,9 @@ import {
     collection,getFirestore,getDoc, onSnapshot,setDoc,doc,updateDoc, increment, Timestamp,addDoc
 } from 'firebase/firestore';
 
+//import storage
+import { getStorage, ref, listAll, getDownloadURL 
+} from "firebase/storage";
 //our firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyA-TNh57VzJUFuYlFC9YEkV0CpWEXyIvFQ",
@@ -114,6 +46,100 @@ const db = getFirestore();
 const WordscolRef = collection(db, 'words');
 //END OF ESTABLISHING DATABASE CONNECTION
 
+//getting popup icons from the database
+//storage
+const storage = getStorage();
+
+// Create a reference under which you want to list
+const listRef = ref(storage, 'Popup_images');
+// Find all the prefixes and items.
+listAll(listRef)
+  .then((res) => {
+    res.items.forEach((itemRef) => {
+      // All the items under listRef.
+      getDownloadURL(itemRef).then((url)=>{
+        //if url has image.png
+        if (url.includes('image.png')) {
+          //set image img in html
+          document.getElementById('image').src = url;
+        }
+        //if url has sound.png
+        if (url.includes('sound.png')) {
+          //set sound img in html
+          document.getElementById('sound').src = url;
+        }
+        //if url has video.png
+        if (url.includes('video.png')) {
+          //set video img in html
+          document.getElementById('video').src = url;
+        }
+        //if url has closeX.png
+        if (url.includes('closeX.png')) {
+          //set close img in html
+          document.getElementById('close').src = url;
+        }
+        //if url has thumbs-up.png
+        if (url.includes('thumbs-up.png')) {
+          //set good img in html
+          document.getElementById('Good').src = url;
+        }
+        //if url has thumbs-down.png
+        if (url.includes('thumbs-down.png')) {
+          //set bad img in html
+          document.getElementById('Bad').src = url;
+        }
+      });
+    });
+  }).catch((error) => {
+    // Uh-oh, an error occurred!
+    console.error(error);
+    
+});
+
+//BEGINNING OF THE VIEW (COMPONENTS ON THE HTML)
+//fetching components from the html file by id
+const headerWord = document.getElementById('headerWord');
+const definition = document.getElementById('definition');
+const egSentence = document.getElementById('egSentence');
+const simWords = document.getElementById('simWords');
+const notMean = document.getElementById('notMean');
+const language = document.getElementById("language");
+const translation = document.getElementById('translation');
+const pictureWord = document.getElementById('wordPic');
+const soundIcon = document.getElementById('sound');
+const videoIcon= document.getElementById('video');
+const imageIcon = document.getElementById('image');
+const goodIcon = document.getElementById('Good');
+const badIcon = document.getElementById('Bad');
+const loader = document.querySelector(".loader");
+
+
+//hide the word picture at first
+pictureWord.style.visibility='hidden';
+
+//hide the video at first
+videoIcon.style.visibility='hidden';
+//END OF THE VIEW (COMPONENTS ON THE HTML)
+
+
+//BEGINNING OF WORKING WITH THE SELECTED WORD HERE
+let word = document.getElementById('headerWord').innerHTML;
+
+//removing spaces from the beginning and end of the word
+let finalWord=word.trim();
+
+//making the word lowercase since our words in the wordlist are all lowercase
+finalWord=finalWord.toLowerCase();
+
+//if there is no word then window in Chrome must stop running
+if (word==null){
+    window.stop();
+}
+//initialize wordFound
+let wordFound = false;
+
+//initialize the array that will store the word's details once its found
+let wordDetails = []
 
 //if there is whitespace in word, show error
 if (/\s/.test(finalWord)){
@@ -132,10 +158,6 @@ if (/\s/.test(finalWord)){
 
                 //set the wordfound boolean to true
                 wordFound = true;
-
-                //hide loader
-                loader.style.visibility="hidden";
-              
 
                 //showing the translation since the word is available in our database
                 document.getElementById('trans').style.visibility="visible";
@@ -182,16 +204,14 @@ if (/\s/.test(finalWord)){
                     notMean.innerHTML = "What the word does NOT mean here: ".bold() + wordDetails[0].WhatWordDoesNotMeanHere;
                 }
                 
+                //hide loader
+                loader.style.display="none";
                 //if signedIn do this
                 if (signedIn == "true"){
-                  //show signOut
-                  toSignOut.style.display = "block";
+                  //show status
+                  document.getElementById('signout').style.display = "block";
                   //add the data into log database if signedin
                   logRequest();
-                }
-                else{//if not signed in do this
-                  //show signIn
-                  toSignIn.style.display = "block";
                 }
                 //stop the loop
                 return false;
@@ -554,14 +574,11 @@ function logRequest(){
 
 
 //BEGINNING OF ON CLICK FUNCTIONS
-//on click listener
-closeIcon.addEventListener('click',doClose);
 imageIcon.addEventListener('click',showImage);
 videoIcon.addEventListener('click',playVideo);
 soundIcon.addEventListener('click',playSound);
 goodIcon.addEventListener('click',incGood);
 badIcon.addEventListener('click',incBad);
-toSignOut.addEventListener('click',signOut);
 
 //Do this when the language clicked changes
 language.onchange = function(){
@@ -824,19 +841,5 @@ function playSound(){
 //when video icon is clicked this will run
 function playVideo(){
 }
-
-//Upon clicking the close icon this runs
-function doClose(){
-    //close the window on chrome
-    window.close();
-}
-
-//sign Out by clearing the local storage where signedIn status is
-function signOut(){
-  //remove the data
-  localStorage.removeItem('signedIn');
-  localStorage.removeItem('email');
-  localStorage.removeItem('dateTime');
-  alert("You are signed out");
-}
 //END OF ON CLICK FUNCTIONS
+

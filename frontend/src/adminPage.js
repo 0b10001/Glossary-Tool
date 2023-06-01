@@ -509,20 +509,65 @@ const submitbtn =document.getElementById('Submit');
 //get the components of edit
 const editWordbtn = document.getElementById('EditOpt');
 
+//deailing with one word
+//set able to...
+let Wordneed = true; 
+//CLEAR INPUTBOXES
+function ClearBoxes(){
+    //clear
+    document.getElementById('badWords').selectedIndex = "0";
+    if (Wordneed == true){
+        document.getElementById('InWord').value = "";
+    }
+    document.getElementById('InDef').value = "";
+    document.getElementById('InEg').value = ""; 
+    console.log(document.getElementById('InEg').value);
+    document.getElementById('InSim').value = "";
+    document.getElementById('InNotMean').value = "";
+    document.getElementById('InGraphic').value = "";
+    document.getElementById('InMovie').value = "";
+    document.getElementById('InAfrikaans').value = "";
+    document.getElementById('InisiNdebele').value = "";
+    document.getElementById('InisiXhosa').value = "";
+    document.getElementById('InisiZulu').value = "";
+    document.getElementById('InSepedi').value = "";
+    document.getElementById('InSesotho').value = "";
+    document.getElementById('InSetswana').value = "";
+    document.getElementById('InsiSwati').value = "";
+    document.getElementById('InTshivenda').value = "";
+    document.getElementById('InXitsonga').value = "";
+    document.getElementById('SW').value = "";
+    
+}
+
+//CLEAR INPUTERRoRs
+function ClearErrors(){
+    //all spans
+    const spans = document.getElementsByClassName("err");
+    
+    // Loop through each span and clear its innerHTML
+    for (let i = 0; i < spans.length; i++) {
+        //clear inner html
+        spans[i].innerHTML = "";
+    }
+}
+
 
 //add enventlistener
 defineWordbtn.addEventListener('click',defineWordOpt);
 //call function
 defineWordOpt();
 function defineWordOpt(){
+    //able need word
+    Wordneed = true;
     //clear searchbox
-    document.getElementById('Search').value = "";
+    document.getElementById('SW').value = "";
     //change name
     document.getElementById('DW').innerHTML = "Define a word";
 
     //clear errors
     ClearErrors();
-    
+
     //clear boxes
     ClearBoxes();
 
@@ -547,10 +592,13 @@ submitbtn.addEventListener('click',submit);
 function submit(){
     //show loader
     document.querySelector(".LoaderDefine").style.visibility="visible";
+
+
+    //look for specific word to be sure
+      
     //validate first
-    if(Validation() == true){
-        //submit to firebase
-        //initialise the values going into firestore
+    if (Validation() == true){
+        //set details
         const info = {
             Definition: document.getElementById('InDef').value,
             Example: document.getElementById('InEg').value, 
@@ -579,6 +627,16 @@ function submit(){
             //clear boxes
             ClearBoxes();
 
+            //clear errors
+            ClearErrors();
+
+            //clear overall error
+            document.getElementById("errO").innerHTML = "";
+
+
+            //feedback
+            alert("New word successfully defined");
+
             //hide loader
             document.querySelector(".LoaderDefine").style.visibility="hidden";
         }
@@ -587,9 +645,10 @@ function submit(){
             console.log(Exception);
             //hide loader
             document.querySelector(".LoaderDefine").style.visibility="hidden";
-            //Word not found in api's so show message
+            //some problem so show message
             document.getElementById("errO").innerHTML="error with adding document, please try again";
         }
+        
     }
 
 }
@@ -600,15 +659,17 @@ function Validation(){
     //Word validation
     // set Word input
     let inWord = document.getElementById('InWord').value;
-    //no spaces and length bigger or equal 1
-    if (/\s/.test(inWord) || inWord.length<1){
-        //show error
-        document.getElementById("errWord").innerHTML = "Word must not have spaces";
-        //increase nErr 
-        nErr++;
-    }else{
-        //clear error
-        document.getElementById("errWord").innerHTML = "";
+    if (Wordneed == true){
+        //no spaces and length bigger or equal 1
+        if (/\s/.test(inWord) || inWord.length<1){
+            //show error
+            document.getElementById("errWord").innerHTML = "Word must not have spaces";
+            //increase nErr 
+            nErr++;
+        }else{
+            //clear error
+            document.getElementById("errWord").innerHTML = "";
+        }
     }
     //Def validation
     // set Def input
@@ -637,33 +698,17 @@ function Validation(){
         //clear error
         document.getElementById("errEg").innerHTML = "";
     }
-
-    //Similar meaning validation
-    // set Sim  input
-    let inSim = document.getElementById('InSim').value;
-    //no validation yet
-    if (1 == 2){
-        //show error
-        document.getElementById("errSim").innerHTML = "Similar meaning";
-        //increase nErr 
-        nErr++;
-    }else{
-        //clear error
-        document.getElementById("errSim").innerHTML = "";
-    }
-    
-    //NotMean validation
-    // set NotMean input
-    let inNotMean = document.getElementById('InNotMean').value;
-    //no validation yet
-    if (1 == 2){
-        //show error
-        document.getElementById("errNotMean").innerHTML = "Not Mean Here";
-        //increase nErr 
-        nErr++;
-    }else{ 
-        //clear error
-        document.getElementById("errNotMean").innerHTML = "";
+    //word not in sentence, only when editting
+    if (inWord.value != ""){
+        if(inEg.toLowerCase().includes(inWord.toLowerCase())){
+            //clear error
+            document.getElementById("errEg").innerHTML = "";
+        }else{
+            //show error
+            document.getElementById("errEg").innerHTML = "Example sentence must include the word";
+            //increase nErr 
+            nErr++;
+        }
     }
    
     //Media urls
@@ -855,6 +900,8 @@ function Validation(){
     }else{
         //hide loader
         document.querySelector(".LoaderDefine").style.visibility="hidden";
+        //error
+        document.getElementById("errO").innerHTML = "Errors above";
         //>0 errors so false
         return false;
     }
@@ -863,9 +910,16 @@ function Validation(){
 
 
 //BEGINNING OF EDIT WORD
+//item clicked in the dropdown
+//get the dropdown
+const dropDownB = document.getElementById('badWords');
+
 //create onlick listener
 editWordbtn.addEventListener('click',editWordOpt);
 function editWordOpt(){
+    //disable need word
+    Wordneed = false;
+
     //change name
     document.getElementById('DW').innerHTML = "Edit a word";
 
@@ -880,9 +934,10 @@ function editWordOpt(){
 
     //clear errors
     ClearErrors();
-    
+
     //clear boxes
     ClearBoxes();
+
 
     //hide certian view
     editWordbtn.style.display = "none";
@@ -904,12 +959,22 @@ function editWordOpt(){
 
 //filling the dropdown with words with more negative than posisive
 function fillDropDown(){
+    
     //initialize details
     let Details = [];
     try{
          //run through the wordlist
         //real time collection data, on any change
         onSnapshot(WordscolRef,(snapshot)=>{
+            //if dropdown has nothing in it
+            //clear first
+            //clear dropdown
+            const dropd = document.getElementById('badWords');
+            // Clear dropdown except for the first option
+            for (let i = dropd.options.length - 1; i > 0; i--) {
+                //remove option
+                dropd.remove(i);
+            }
             //initialize bad words
             let BadWords = [];
             //go through every document until the word is found
@@ -957,15 +1022,13 @@ function fillDropDown(){
     }
 }
 
-//item clicked in the dropdown
-//get the dropdown
-const dropDownB = document.getElementById('badWords');
 
 //its onchange listener
 dropDownB.addEventListener('change',detailsInBoxes);
 
 //enter details in boxes
 function detailsInBoxes(){
+    
     //clear errors
     ClearErrors();
 
@@ -980,11 +1043,18 @@ function detailsInBoxes(){
         //get search value
         ValueW = document.getElementById("SW").value;
     }
+    
+
     //go to database and set the words in the boxes
     const docRef = doc(db,'words',ValueW);
     try{
         //get then document
         onSnapshot(docRef, (doc) => {
+            //if dropdown has nothing in it
+            if (dropDownB.selectedIndex == "0" && document.getElementById("SW").value ==""){
+                //stop function
+                return;
+            }
             //clear wordDetails
             let wordDetails = [];
             //add the data of the found document to the wordDetails list
@@ -994,6 +1064,11 @@ function detailsInBoxes(){
             if (!wordDetails[0].Definition && !wordDetails[0].Example){
                 //error
                 document.getElementById('errSearch').innerHTML = "Word not found";
+                    //clear errors
+                    ClearErrors();
+
+                    //clear boxes
+                    ClearBoxes();
                 //back
                 return;
             }
@@ -1221,12 +1296,25 @@ function Update(){
         }
         //try to set document
         try{
-            //update document called finalWord that holds the details
-            updateDoc(doc(db, "words", document.getElementById('InWord').value),info);
+            //if word not in searchbox choose it
+            if (document.getElementById('SW').value == ""){
+                //update word
+                updateDoc(doc(db, "words", document.getElementById('badWords').value),info);
 
+            }else{ //if word in searchbox use it
+                //update document called finalWord that holds the details
+                updateDoc(doc(db, "words", document.getElementById('SW').value),info);
+              
+            }
             //clear boxes
             ClearBoxes();
 
+            //clear overall error
+            document.getElementById("errO").innerHTML = "";
+
+            //feedack
+            alert("Word successfully updated")
+            
             //hide loader
             document.querySelector(".LoaderDefine").style.visibility="hidden";
         }
@@ -1236,45 +1324,11 @@ function Update(){
             //hide loader
             document.querySelector(".LoaderDefine").style.visibility="hidden";
             //Word not found in api's so show message
-            document.getElementById("errO").innerHTML="error with adding document, please try again";
+            document.getElementById("errO").innerHTML="error with editing document, please try again";
         }
     }
 }
 //BEGINNING OF EDIT WORD
-
-//CLEAR INPUTBOXES
-function ClearBoxes(){
-    document.getElementById('InWord').value = "";
-    document.getElementById('InDef').value = "";
-    document.getElementById('InEg').value = ""; 
-    document.getElementById('InSim').value = "";
-    document.getElementById('InNotMean').value = "";
-    document.getElementById('InGraphic').value = "";
-    document.getElementById('InMovie').value = "";
-    document.getElementById('InAfrikaans').value = "";
-    document.getElementById('InisiNdebele').value = "";
-    document.getElementById('InisiXhosa').value = "";
-    document.getElementById('InisiZulu').value = "";
-    document.getElementById('InSepedi').value = "";
-    document.getElementById('InSesotho').value = "";
-    document.getElementById('InSetswana').value = "";
-    document.getElementById('InsiSwati').value = "";
-    document.getElementById('InTshivenda').value = "";
-    document.getElementById('InXitsonga').value = "";
-}
-
-//CLEAR INPUTERRoRs
-function ClearErrors(){
-    //all spans
-    const spans = document.getElementsByClassName('err');
-
-    // Loop through each span and clear its innerHTML
-    for (let i = 0; i < spans.length; i++) {
-        //clear inner html
-        spans[i].innerHTML = "";
-    }
-}
-
 
 //cancel
 const Cancelbtn = document.getElementById('Cancel');
@@ -1282,8 +1336,10 @@ const Cancelbtn = document.getElementById('Cancel');
 Cancelbtn.addEventListener('click', Reload);
 //Reload
 function Reload(){
-    //clear
+    //clear boxes
     ClearBoxes();
+    //clear errors
+    ClearErrors();
     //reset dropdown
     dropDownB.selectedIndex = 0;
 }
@@ -1317,10 +1373,20 @@ function SubmitUser(){
             //clear boxes
             CancelNewUser();
         }).catch((error)=>{
-            //log error
-            console.log(error);
-            //show user error
-            document.getElementById('errAuth').innerHTML = "Something went wrong, try again please"
+            //initiate errcode and errMessage
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            //if password is wrong notify user
+            if (errorCode === 'auth/email-already-in-use') {
+                //show user error
+                document.getElementById('errAuth').innerHTML = "User already registered";
+            }else{
+                //log error
+                console.log(error);
+                //show user error
+                document.getElementById('errAuth').innerHTML = "Something went wrong, try again please"
+            }
+            
         })
     }
 
@@ -1337,7 +1403,7 @@ function validateUserInfo(){
         //increase error count
         nErr++
         //show error
-        document.getElementById('errEmail').innerHTML = "Inavlid email format";
+        document.getElementById('errEmail').innerHTML = "Invalid email format";
     }else{
         //remove error
         document.getElementById('errEmail').innerHTML = "";
@@ -1386,6 +1452,9 @@ function CancelNewUser(){
     document.getElementById('InPass').value = "";
     //clear verify password input
     document.getElementById('InVPass').value = "";
+
+    //clear errors
+    ClearErrors();
 }
 //END OF ADD NEW USER
 

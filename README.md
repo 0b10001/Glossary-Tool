@@ -1,6 +1,6 @@
 # Glossary-Tool
 
-Glossary-Tool is a multimedia and multilingual glossary tool developed as a standalone server application, designed to assist users in reading English text. The tool allows users to click on words in an HTML document and view pop-ups that show the word's definition, a picture, a video, an audio file for pronunciation, and translations into other languages. Additional are here: https://drive.google.com/drive/folders/1KPzwweqPU1WC7U72Q1zDz7ZquQaIaWaj?usp=share_link
+Glossary-Tool is a multimedia and multilingual glossary tool developed as a standalone server application, designed to assist users in reading English text. The tool allows users to click on words in an HTML document and view pop-ups that show the word's definition, a picture, a video, an audio file for pronunciation, and translations into other languages. Additional files are here: https://drive.google.com/drive/folders/1KPzwweqPU1WC7U72Q1zDz7ZquQaIaWaj?usp=share_link
 
 # Client
 
